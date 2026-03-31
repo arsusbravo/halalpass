@@ -13,6 +13,7 @@ use App\Http\Controllers\SjphController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SupplierPortalController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\CertificationReadinessController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -71,6 +72,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('certificates.upload');
         Route::get('certificates/{certificate}/download', [CertificateController::class, 'download'])
             ->name('certificates.download');
+
+        Route::get('certification', CertificationReadinessController::class)->name('certification.readiness');
 
         // Products
         Route::resource('products', ProductController::class);

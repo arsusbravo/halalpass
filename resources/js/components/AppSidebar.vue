@@ -61,6 +61,7 @@ const mainNavItems = computed<NavItem[]>(() => {
             { title: t('Ingredients'), href: '/ingredients', icon: TreePine },
             { title: t('Certificates'), href: '/certificates', icon: ShieldCheck },
             { title: t('Products'), href: '/products', icon: Package },
+            { title: t('Certification'), href: '/certification', icon: ShieldCheck },
             { title: t('Export'), href: '/export', icon: Download },
         );
 
@@ -77,12 +78,12 @@ const mainNavItems = computed<NavItem[]>(() => {
 const footerNavItems = computed<NavItem[]>(() => [
     {
         title: t('SIHALAL Docs'),
-        href: 'https://sihalal.halal.go.id',
+        href: 'https://ptsp.halal.go.id/',
         icon: ScrollText,
     },
     {
         title: t('Documentation'),
-        href: 'https://laravel.com/docs/starter-kits#vue',
+        href: '/doc.html',
         icon: BookOpen,
     },
 ]);
