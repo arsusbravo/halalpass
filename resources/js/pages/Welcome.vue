@@ -82,7 +82,40 @@ const steps = [
                     <p class="hp-hero-legal">{{ t('Based on UU No. 33/2014 & PP No. 42/2024') }}</p>
                 </div>
                 <div class="hp-hero-visual">
-                    <img :src="logoLg" alt="HalalPass" />
+                    <div class="hp-mockup">
+                        <!-- Mini app window -->
+                        <div class="hp-mock-bar">
+                            <span class="hp-mock-dot" style="background:#ff5f57"></span>
+                            <span class="hp-mock-dot" style="background:#febc2e"></span>
+                            <span class="hp-mock-dot" style="background:#28c840"></span>
+                            <span class="hp-mock-url">halalpass.id/certification</span>
+                        </div>
+                        <div class="hp-mock-body">
+                            <!-- Readiness banner -->
+                            <div class="hp-mock-ready">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                                <div>
+                                    <span class="hp-mock-ready-title">{{ t('Ready to Submit!') }}</span>
+                                    <span class="hp-mock-ready-sub">8/8 {{ t('checks passed') }}</span>
+                                </div>
+                                <span class="hp-mock-score">100%</span>
+                            </div>
+                            <!-- Checklist -->
+                            <div class="hp-mock-checks">
+                                <div class="hp-mock-check"><span class="hp-ck pass"></span><span>{{ t('Facilities') }}</span><span class="hp-ck-tag">3</span></div>
+                                <div class="hp-mock-check"><span class="hp-ck pass"></span><span>{{ t('Suppliers') }}</span><span class="hp-ck-tag">7</span></div>
+                                <div class="hp-mock-check"><span class="hp-ck pass"></span><span>{{ t('Ingredients') }}</span><span class="hp-ck-tag">20</span></div>
+                                <div class="hp-mock-check"><span class="hp-ck pass"></span><span>{{ t('Certificates') }}</span><span class="hp-ck-tag green">{{ t('All valid') }}</span></div>
+                                <div class="hp-mock-check"><span class="hp-ck pass"></span><span>{{ t('Products') }}</span><span class="hp-ck-tag green">100/100</span></div>
+                                <div class="hp-mock-check"><span class="hp-ck pass"></span><span>SJPH</span><span class="hp-ck-tag green">{{ t('Approved') }}</span></div>
+                            </div>
+                            <!-- Export button -->
+                            <div class="hp-mock-export">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" /></svg>
+                                {{ t('Download Export for SIHALAL') }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -203,9 +236,59 @@ const steps = [
 .hp-hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
 .hp-hero-legal { font-size: 12px; color: #9ca3af; }
 .hp-hero-visual { flex-shrink: 0; }
-.hp-hero-visual img {
-    width: 300px; height: 300px; object-fit: contain;
-    filter: drop-shadow(0 12px 40px rgba(21, 128, 61, 0.15));
+
+/* ===== MOCKUP ===== */
+.hp-mockup {
+    width: 380px; border-radius: 14px; overflow: hidden;
+    background: #fff; border: 1px solid #e5e7eb;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+    transform: perspective(800px) rotateY(-2deg) rotateX(1deg);
+}
+.hp-mock-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 14px; background: #f9fafb; border-bottom: 1px solid #e5e7eb;
+}
+.hp-mock-dot { width: 10px; height: 10px; border-radius: 50%; }
+.hp-mock-url {
+    margin-left: 8px; font-size: 11px; color: #9ca3af;
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 4px;
+    padding: 2px 10px; flex: 1; text-align: center;
+}
+.hp-mock-body { padding: 16px; }
+.hp-mock-ready {
+    display: flex; align-items: center; gap: 10px;
+    background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 14px;
+}
+.hp-mock-ready-title { display: block; font-size: 13px; font-weight: 700; color: #15803d; }
+.hp-mock-ready-sub { display: block; font-size: 11px; color: #4ade80; }
+.hp-mock-score {
+    margin-left: auto; font-size: 22px; font-weight: 900; color: #15803d;
+}
+.hp-mock-checks { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.hp-mock-check {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: 8px;
+    background: #f9fafb; font-size: 13px; color: #374151;
+}
+.hp-ck {
+    width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+}
+.hp-ck.pass {
+    background: #dcfce7;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2315803d' stroke-width='3.5'%3E%3Cpath d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: center;
+}
+.hp-ck-tag {
+    margin-left: auto; font-size: 11px; font-weight: 600;
+    background: #f3f4f6; color: #6b7280; padding: 2px 8px; border-radius: 4px;
+}
+.hp-ck-tag.green { background: #dcfce7; color: #15803d; }
+.hp-mock-export {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: #15803d; color: #fff; border-radius: 8px;
+    padding: 10px; font-size: 12px; font-weight: 600;
 }
 
 /* ===== SECTIONS ===== */
@@ -267,6 +350,7 @@ const steps = [
     .hp-hero-content > p { max-width: 100%; }
     .hp-hero-buttons { justify-content: center; }
     .hp-hero-visual img { width: 200px; height: 200px; }
+    .hp-mockup { width: 100%; transform: none; }
     .hp-grid-3 { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 600px) {
