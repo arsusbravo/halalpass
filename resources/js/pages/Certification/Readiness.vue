@@ -7,39 +7,25 @@ import HalalStatusBadge from '@/components/HalalStatusBadge.vue';
 import DeadlineBanner from '@/components/DeadlineBanner.vue';
 import { type BreadcrumbItem } from '@/types';
 
-const { t, d } = useTrans();
+const { t } = useTrans();
 
 const props = defineProps<{
     isReady: boolean;
     readinessPercentage: number;
     checks: {
         has_facilities: boolean;
-        has_suppliers: boolean;
         has_ingredients: boolean;
         has_products: boolean;
         all_certs_valid: boolean;
         all_products_compliant: boolean;
-        no_expiring_certs: boolean;
-        all_sjph_approved: boolean;
         any_sjph_approved: boolean;
-    };
-    stats: {
-        facilities: number;
-        suppliers: number;
-        ingredients: number;
-        products: number;
-        certificates: number;
-        products_compliant: number;
-        products_total: number;
     };
     ingredientIssues: Array<{
         id: number;
         name: string;
         code: string | null;
         risk_level: string;
-        supplier: string | null;
-        cert_status: string;
-        cert_expiry: string | null;
+        brand: string | null;
     }>;
     productIssues: Array<{
         id: number;
@@ -47,13 +33,6 @@ const props = defineProps<{
         code: string | null;
         halal_status: string;
         halal_health_score: number;
-    }>;
-    expiringSoon: Array<{
-        id: number;
-        sh_number: string;
-        expiry_date: string;
-        days_until_expiry: number;
-        ingredient_name: string | null;
     }>;
     sjphStatuses: Array<{
         facility_id: number;
@@ -80,12 +59,10 @@ interface CheckItem {
 
 const checkItems: CheckItem[] = [
     { key: 'has_facilities', label: t('Production facilities registered'), passed: props.checks.has_facilities, action: t('Add Facility'), href: '/facilities/create' },
-    { key: 'has_suppliers', label: t('Suppliers registered'), passed: props.checks.has_suppliers, action: t('Add Supplier'), href: '/suppliers/create' },
     { key: 'has_ingredients', label: t('Ingredients inventoried'), passed: props.checks.has_ingredients, action: t('Add Ingredient'), href: '/ingredients/create' },
     { key: 'has_products', label: t('Products created'), passed: props.checks.has_products, action: t('Add Product'), href: '/products/create' },
-    { key: 'all_certs_valid', label: t('All required certificates are valid'), passed: props.checks.all_certs_valid, action: t('Fix certificates'), href: '/certificates' },
+    { key: 'all_certs_valid', label: t('All ingredients have valid halal certificates'), passed: props.checks.all_certs_valid, action: t('Fix ingredients'), href: '/ingredients' },
     { key: 'all_products_compliant', label: t('All products are halal compliant'), passed: props.checks.all_products_compliant, action: t('View products'), href: '/products' },
-    { key: 'no_expiring_certs', label: t('No certificates expiring within 90 days'), passed: props.checks.no_expiring_certs, action: t('View certificates'), href: '/certificates' },
     { key: 'any_sjph_approved', label: t('At least one SJPH document approved'), passed: props.checks.any_sjph_approved, action: t('Open SJPH'), href: '/facilities' },
 ];
 
@@ -159,28 +136,35 @@ const passedCount = checkItems.filter(c => c.passed).length;
                 </div>
             </div>
 
-            <!-- Blocking Issues: Missing/Expired Certificates -->
+            <!-- Ingredients missing certificates -->
             <div v-if="ingredientIssues.length > 0" class="mt-6 rounded-xl border border-red-200 bg-white dark:border-red-800 dark:bg-gray-900">
                 <div class="border-b border-red-100 px-5 py-4 dark:border-red-800">
-                    <h3 class="font-semibold text-red-800 dark:text-red-200">{{ t('Certificates to Fix') }} ({{ ingredientIssues.length }})</h3>
-                    <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ t('These ingredients need valid halal certificates before you can submit.') }}</p>
+                    <h3 class="font-semibold text-red-800 dark:text-red-200">{{ t('Ingredients Missing Certificate') }} ({{ ingredientIssues.length }})</h3>
+                    <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ t('These ingredients need a halal certificate number. Search on BPJPH and add the SH number.') }}</p>
                 </div>
                 <div class="divide-y divide-red-100 dark:divide-red-800/50">
                     <div v-for="issue in ingredientIssues" :key="issue.id" class="flex items-center justify-between px-5 py-3">
                         <div>
-                            <p class="font-medium text-gray-900 dark:text-gray-100">{{ issue.name }} <span class="text-xs text-gray-400">({{ issue.code }})</span></p>
+                            <p class="font-medium text-gray-900 dark:text-gray-100">{{ issue.name }}</p>
                             <p class="text-xs text-gray-500">
-                                {{ issue.supplier ?? '-' }} &middot;
-                                <span :class="issue.risk_level === 'high_risk' ? 'text-red-600 font-semibold' : 'text-amber-600'">
+                                {{ issue.brand || '-' }} &middot;
+                                <span :class="issue.risk_level === 'high_risk' ? 'font-semibold text-red-600' : 'text-amber-600'">
                                     {{ issue.risk_level === 'high_risk' ? t('High Risk') : t('Medium Risk') }}
                                 </span>
-                                &middot;
-                                <span class="text-red-600">{{ issue.cert_status === 'expired' ? t('Expired') + (issue.cert_expiry ? ` (${d(issue.cert_expiry)})` : '') : t('Missing') }}</span>
                             </p>
                         </div>
-                        <Link :href="`/certificates/create?ingredient_id=${issue.id}`" class="rounded-lg border border-red-300 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-950">
-                            {{ issue.cert_status === 'expired' ? t('Renew') : t('Upload') }}
-                        </Link>
+                        <div class="flex items-center gap-2">
+                            <a
+                                :href="`https://bpjph.halal.go.id/sertifikat-halal/sertifikat?nama_produk=${encodeURIComponent(issue.name)}`"
+                                target="_blank"
+                                class="rounded-lg border border-emerald-300 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-300"
+                            >
+                                {{ t('Search BPJPH') }}
+                            </a>
+                            <Link :href="`/ingredients/${issue.id}/edit`" class="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700">
+                                {{ t('Add certificate') }}
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -193,7 +177,7 @@ const passedCount = checkItems.filter(c => c.passed).length;
                 <div class="divide-y divide-amber-100 dark:divide-amber-800/50">
                     <div v-for="product in productIssues" :key="product.id" class="flex items-center justify-between px-5 py-3">
                         <div>
-                            <p class="font-medium text-gray-900 dark:text-gray-100">{{ product.name }} <span class="text-xs text-gray-400">({{ product.code }})</span></p>
+                            <p class="font-medium text-gray-900 dark:text-gray-100">{{ product.name }}</p>
                             <p class="text-xs text-gray-500">{{ t('Score') }}: {{ product.halal_health_score }}/100</p>
                         </div>
                         <div class="flex items-center gap-2">
@@ -204,31 +188,12 @@ const passedCount = checkItems.filter(c => c.passed).length;
                 </div>
             </div>
 
-            <!-- Expiring Soon -->
-            <div v-if="expiringSoon.length > 0" class="mt-6 rounded-xl border border-amber-200 bg-white dark:border-amber-800 dark:bg-gray-900">
-                <div class="border-b border-amber-100 px-5 py-4 dark:border-amber-800">
-                    <h3 class="font-semibold text-amber-800 dark:text-amber-200">{{ t('Certificates Expiring Soon') }} ({{ expiringSoon.length }})</h3>
-                    <p class="mt-1 text-xs text-amber-600">{{ t('Renew these before submitting to avoid rejection.') }}</p>
-                </div>
-                <div class="divide-y divide-amber-100 dark:divide-amber-800/50">
-                    <div v-for="cert in expiringSoon" :key="cert.id" class="flex items-center justify-between px-5 py-3">
-                        <div>
-                            <p class="font-medium text-gray-900 dark:text-gray-100">{{ cert.ingredient_name }}</p>
-                            <p class="text-xs text-gray-500">{{ cert.sh_number }} &middot; {{ d(cert.expiry_date) }}</p>
-                        </div>
-                        <span class="text-sm font-semibold tabular-nums" :class="cert.days_until_expiry <= 30 ? 'text-red-600' : 'text-amber-600'">
-                            {{ cert.days_until_expiry }} {{ t('days left') }}
-                        </span>
-                    </div>
-                </div>
-            </div>
-
             <!-- SJPH Status per Facility -->
             <div class="mt-6 rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
                 <div class="border-b border-gray-100 px-5 py-4 dark:border-gray-800">
                     <h3 class="font-semibold text-gray-900 dark:text-gray-100">{{ t('SJPH Status') }}</h3>
                 </div>
-                <div class="divide-y divide-gray-100 dark:divide-gray-800">
+                <div v-if="sjphStatuses.length > 0" class="divide-y divide-gray-100 dark:divide-gray-800">
                     <Link v-for="sjph in sjphStatuses" :key="sjph.facility_id" :href="`/sjph/${sjph.facility_id}`" class="flex items-center justify-between px-5 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/50">
                         <div>
                             <p class="font-medium text-gray-900 dark:text-gray-100">{{ sjph.facility_name }}</p>
@@ -242,6 +207,9 @@ const passedCount = checkItems.filter(c => c.passed).length;
                         </div>
                     </Link>
                 </div>
+                <div v-else class="px-5 py-8 text-center text-sm text-gray-500">
+                    {{ t('Add a facility first to start your SJPH.') }}
+                </div>
             </div>
 
             <!-- Next Steps -->
@@ -253,10 +221,9 @@ const passedCount = checkItems.filter(c => c.passed).length;
                     <li><strong>{{ t('LPH Review') }}</strong> — {{ t('Halal Inspection Body reviews your documents (5-10 working days)') }}</li>
                     <li><strong>{{ t('Facility Audit') }}</strong> — {{ t('LPH may visit your facility to verify SJPH compliance') }}</li>
                     <li><strong>{{ t('MUI Fatwa') }}</strong> — {{ t('Indonesian Ulema Council issues halal fatwa') }}</li>
-                    <li><strong>{{ t('Certificate Issued') }}</strong> — {{ t('BPJPH issues your Halal Certificate (valid 4 years)') }}</li>
+                    <li><strong>{{ t('Certificate Issued') }}</strong> — {{ t('BPJPH issues your Halal Certificate (valid for life)') }}</li>
                 </ol>
             </div>
-
         </div>
         <FlashMessage />
     </AppLayout>

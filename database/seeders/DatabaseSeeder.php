@@ -9,16 +9,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            CompanySeeder::class,
+            // CompanySeeder::class,
             UserSeeder::class,
-            FacilitySeeder::class,
-            SupplierSeeder::class,
-            IngredientSeeder::class,
-            HalalCertificateSeeder::class,
-            ProductSeeder::class,
-            ProductIngredientSeeder::class,
-            SupplierAccessTokenSeeder::class,
-            SjphDocumentSeeder::class,
+            // FacilitySeeder::class,
+            // SupplierSeeder::class,
+            // IngredientSeeder::class,
+            // HalalCertificateSeeder::class,
+            // ProductSeeder::class,
+            // ProductIngredientSeeder::class,
+            // SupplierAccessTokenSeeder::class,
+            // SjphDocumentSeeder::class,
         ]);
     }
 }

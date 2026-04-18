@@ -25,7 +25,7 @@ class AuditExportController extends Controller
 
         $products = Product::where('company_id', $companyId)
             ->active()
-            ->get(['id', 'name', 'code', 'halal_status']);
+            ->get(['id', 'name', 'code', 'halal_status', 'halal_health_score']);
 
         $facilities = Facility::where('company_id', $companyId)
             ->active()
@@ -39,18 +39,25 @@ class AuditExportController extends Controller
 
     public function generate(Request $request)
     {
-        $request->validate([
-            'product_ids' => 'nullable|array',
-            'product_ids.*' => 'exists:products,id',
-            'facility_ids' => 'nullable|array',
-            'facility_ids.*' => 'exists:facilities,id',
-            'include_certificates' => 'nullable|boolean',
-            'include_material_matrix' => 'nullable|boolean',
-        ]);
+        $companyId = $request->user()->activeCompanyId();
 
-        $dto = AuditExportDTO::fromRequest(
-            $request->all(),
-            $request->user()->activeCompanyId()
+        $productIds = $request->query('products')
+            ? explode(',', $request->query('products'))
+            : null;
+
+        $facilityIds = $request->query('facilities')
+            ? explode(',', $request->query('facilities'))
+            : null;
+
+        $includeCerts = $request->boolean('include_certificates', true);
+        $includeMatrix = $request->boolean('include_material_matrix', true);
+
+        $dto = new AuditExportDTO(
+            company_id: $companyId,
+            product_ids: $productIds,
+            facility_ids: $facilityIds,
+            include_certificates: $includeCerts,
+            include_material_matrix: $includeMatrix,
         );
 
         try {
@@ -58,7 +65,7 @@ class AuditExportController extends Controller
 
             return response()->download($zipPath)->deleteFileAfterSend(true);
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal membuat export: ' . $e->getMessage());
+            return back()->with('error', __('Export failed: :message', ['message' => $e->getMessage()]));
         }
     }
 }

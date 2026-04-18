@@ -45,7 +45,10 @@ function submit() {
                         </select>
                         <p v-if="form.errors.ingredient_id" class="mt-1 text-xs text-red-600">{{ form.errors.ingredient_id }}</p>
                     </div>
-                    <div class="sm:col-span-2"><label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('SH Number') }} *</label><input v-model="form.sh_number" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100" /><p v-if="form.errors.sh_number" class="mt-1 text-xs text-red-600">{{ form.errors.sh_number }}</p></div>
+                    <div class="sm:col-span-2"><label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('SH Number') }} *</label><input v-model="form.sh_number" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100" /><p v-if="form.errors.sh_number" class="mt-1 text-xs text-red-600">{{ form.errors.sh_number }}</p>
+                    <div v-if="form.ingredient_id" class="mt-1">
+                        <p><a :href="'https://halalmui.org/search-product?productname=' + (ingredients.find(i => i.id === form.ingredient_id)?.name ?? '')" target="_blank" class="flex items-center gap-1 text-sm text-green-500">{{ t('Find certificate number') }}<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></a></p>
+                    </div></div>
                     <div>
                         <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('Issuing Body') }} *</label>
                         <select v-model="form.issuing_body" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100">

@@ -36,6 +36,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //  Owner-only: Company management (platform level)
     // --------------------------------------------------------
     Route::get('companies', [CompanyController::class, 'index'])->name('companies.index');
+    Route::get('companies/create', [CompanyController::class, 'create'])->name('companies.create');
+    Route::post('companies', [CompanyController::class, 'store'])->name('companies.store');
+    Route::patch('companies/{company}/toggle-status', [CompanyController::class, 'toggleStatus'])->name('companies.toggle-status');
+    Route::delete('companies/{company}', [CompanyController::class, 'destroy'])->name('companies.destroy');
     Route::post('companies/{company}/enter', [CompanyController::class, 'enter'])->name('companies.enter');
     Route::post('companies/leave', [CompanyController::class, 'leave'])->name('companies.leave');
 
@@ -62,9 +66,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('supplier-tokens.revoke');
 
         // Ingredients
+        Route::get('ingredients/bulk', [IngredientController::class, 'bulkCreate'])->name('ingredients.bulk-create');
+        Route::get('ingredients/search', [IngredientController::class, 'search'])->name('ingredients.search');
         Route::resource('ingredients', IngredientController::class);
         Route::post('ingredients/{ingredient}/children', [IngredientController::class, 'addChild'])
             ->name('ingredients.add-child');
+        Route::post('ingredients/bulk', [IngredientController::class, 'bulkStore'])->name('ingredients.bulk-store');
 
         // Halal Certificates
         Route::resource('certificates', CertificateController::class);

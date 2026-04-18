@@ -10,9 +10,6 @@ use Inertia\Response;
 
 class CompanyController extends Controller
 {
-    /**
-     * List all companies — owner only.
-     */
     public function index(Request $request): Response
     {
         abort_if($request->user()->role !== 'owner', 403);
@@ -38,9 +35,69 @@ class CompanyController extends Controller
         ]);
     }
 
-    /**
-     * Enter a company context — sets the session.
-     */
+    public function create(Request $request): Response
+    {
+        abort_if($request->user()->role !== 'owner', 403);
+
+        return Inertia::render('Companies/Create');
+    }
+
+    public function store(Request $request)
+    {
+        abort_if($request->user()->role !== 'owner', 403);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'address' => 'nullable|string|max:500',
+            'city' => 'nullable|string|max:255',
+            'province' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'npwp' => 'nullable|string|max:20',
+        ]);
+
+        $validated['status'] = 'active';
+
+        Company::create($validated);
+
+        return redirect()->route('companies.index')
+            ->with('success', __('Company created successfully.'));
+    }
+
+    public function toggleStatus(Request $request, Company $company)
+    {
+        abort_if($request->user()->role !== 'owner', 403);
+
+        $newStatus = $company->status === 'active' ? 'inactive' : 'active';
+        $company->update(['status' => $newStatus]);
+
+        $message = $newStatus === 'active'
+            ? __('Company activated successfully.')
+            : __('Company deactivated successfully.');
+
+        return redirect()->route('companies.index')->with('success', $message);
+    }
+
+    public function destroy(Request $request, Company $company)
+    {
+        abort_if($request->user()->role !== 'owner', 403);
+
+        // Prevent deleting companies that have users
+        if ($company->users()->count() > 0) {
+            return redirect()->route('companies.index')
+                ->with('error', __('Cannot delete a company that still has users. Remove all users first.'));
+        }
+
+        $company->delete();
+
+        // Clear session if the deleted company was active
+        if (session('active_company_id') === $company->id) {
+            session()->forget('active_company_id');
+        }
+
+        return redirect()->route('companies.index')
+            ->with('success', __('Company deleted successfully.'));
+    }
+
     public function enter(Request $request, Company $company)
     {
         abort_if($request->user()->role !== 'owner', 403);
@@ -48,12 +105,9 @@ class CompanyController extends Controller
         session(['active_company_id' => $company->id]);
 
         return redirect()->route('dashboard')
-            ->with('success', "Masuk ke {$company->name}");
+            ->with('success', __('Entered :name', ['name' => $company->name]));
     }
 
-    /**
-     * Leave company context — clears session.
-     */
     public function leave(Request $request)
     {
         abort_if($request->user()->role !== 'owner', 403);

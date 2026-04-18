@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\AutoGeneratesCode;
 
 class Ingredient extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, AutoGeneratesCode;
 
     protected $fillable = [
         'company_id',
@@ -27,11 +28,15 @@ class Ingredient extends Model
         'specifications',
         'notes',
         'halal_risk_level',
+        'sh_number',
+        'cert_issue_date'
     ];
 
     protected $casts = [
         'specifications' => 'array',
     ];
+
+    protected $appends = ['cert_status'];
 
     /* ----------------------------------------------------------------
      |  Relationships
@@ -114,5 +119,27 @@ class Ingredient extends Model
     public function scopeRootLevel($query)
     {
         return $query->whereNull('parent_id');
+    }
+    
+    public function getCertStatusAttribute(): ?string
+    {
+        $riskLevel = $this->halal_risk_level ?? 'medium_risk';
+
+        if ($riskLevel === 'no_risk') {
+            return 'valid';
+        }
+
+        // Has SH number = valid for life (GR 42/2024)
+        if ($this->sh_number) {
+            return 'valid';
+        }
+
+        // Low risk without cert = ok
+        if ($riskLevel === 'low_risk') {
+            return null;
+        }
+
+        // Medium/high risk without cert = missing
+        return 'missing';
     }
 }

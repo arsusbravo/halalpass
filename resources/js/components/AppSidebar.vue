@@ -4,9 +4,11 @@ import {
     BookOpen,
     Building,
     Building2,
+    ChevronDown,
     Download,
     LayoutGrid,
     LogOut,
+    MoreHorizontal,
     Package,
     ScrollText,
     ShieldCheck,
@@ -31,61 +33,51 @@ import {
 import { dashboard } from '@/routes';
 import { useAuth } from '@/composables/useAuth';
 import { useTrans } from '@/composables/useTrans';
-import type { NavItem } from '@/types';
-import { computed } from 'vue';
+import { type NavItem } from '@/types';
+import { computed, ref } from 'vue';
 
 const { isOwner, isAdmin, activeCompany, hasCompanyContext } = useAuth();
 const { t } = useTrans();
+
+const showMore = ref(false);
 
 const mainNavItems = computed<NavItem[]>(() => {
     const items: NavItem[] = [];
 
     if (isOwner.value) {
-        items.push({
-            title: t('Companies'),
-            href: '/companies',
-            icon: Building,
-        });
+        items.push({ title: t('Companies'), href: '/companies', icon: Building });
     }
 
-    items.push({
-        title: t('Dashboard'),
-        href: '/dashboard',
-        icon: LayoutGrid,
-    });
+    items.push({ title: t('Dashboard'), href: '/dashboard', icon: LayoutGrid });
 
     if (hasCompanyContext.value || !isOwner.value) {
         items.push(
             { title: t('Facilities'), href: '/facilities', icon: Building2 },
-            { title: t('Suppliers'), href: '/suppliers', icon: Truck },
             { title: t('Ingredients'), href: '/ingredients', icon: TreePine },
-            { title: t('Certificates'), href: '/certificates', icon: ShieldCheck },
             { title: t('Products'), href: '/products', icon: Package },
             { title: t('Certification'), href: '/certification', icon: ShieldCheck },
             { title: t('Export'), href: '/export', icon: Download },
         );
 
         if (isAdmin.value) {
-            items.push(
-                { title: t('Users'), href: '/users', icon: Users },
-            );
+            items.push({ title: t('Users'), href: '/users', icon: Users });
         }
     }
 
     return items;
 });
 
+const moreNavItems = computed<NavItem[]>(() => {
+    if (!hasCompanyContext.value && !isOwner.value) return [];
+    return [
+        { title: t('Suppliers'), href: '/suppliers', icon: Truck },
+        { title: t('Certificates'), href: '/certificates', icon: ShieldCheck },
+    ];
+});
+
 const footerNavItems = computed<NavItem[]>(() => [
-    {
-        title: t('SIHALAL Docs'),
-        href: 'https://ptsp.halal.go.id/',
-        icon: ScrollText,
-    },
-    {
-        title: t('Documentation'),
-        href: '/doc.html',
-        icon: BookOpen,
-    },
+    { title: t('SIHALAL Docs'), href: 'https://sihalal.halal.go.id', icon: ScrollText },
+    { title: t('Documentation'), href: 'https://laravel.com/docs/starter-kits#vue', icon: BookOpen },
 ]);
 
 function leaveCompany() {
@@ -117,7 +109,7 @@ function leaveCompany() {
                 </button>
             </div>
 
-            <!-- Company profile link for admin (non-owner) -->
+            <!-- Company name for admin -->
             <div v-else-if="!isOwner && activeCompany" class="mx-2 mb-1">
                 <Link href="/company-profile" class="flex items-center rounded-lg px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
                     <Building class="mr-2 h-3.5 w-3.5" />
@@ -128,6 +120,18 @@ function leaveCompany() {
 
         <SidebarContent>
             <NavMain :items="mainNavItems" />
+
+            <!-- More section (Suppliers, Certificates) -->
+            <div v-if="moreNavItems.length > 0" class="px-3 pt-2">
+                <button @click="showMore = !showMore" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-gray-400 hover:bg-gray-50 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300">
+                    <MoreHorizontal class="h-4 w-4" />
+                    <span>{{ t('More') }}</span>
+                    <ChevronDown :class="['ml-auto h-3 w-3 transition-transform', showMore ? 'rotate-180' : '']" />
+                </button>
+                <div v-if="showMore" class="mt-1">
+                    <NavMain :items="moreNavItems" />
+                </div>
+            </div>
         </SidebarContent>
 
         <SidebarFooter>

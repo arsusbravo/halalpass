@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Company;
 use App\Models\Facility;
-use App\Models\HalalCertificate;
 use App\Models\Ingredient;
 use App\Models\Product;
-use App\Models\Supplier;
 use App\Services\CertificateService;
 use App\Services\HalalHealthScoreService;
 use Illuminate\Http\Request;
@@ -36,13 +33,12 @@ class DashboardController extends Controller
         $certSummary = $certificateService->getStatusSummary($companyId);
         $expiringSoon = $certificateService->getExpiringSoon($companyId, 90);
 
-        $company = Company::find($companyId);
         $onboarding = [
-            'company_profile' => !empty($company->address) && !empty($company->npwp),
             'facilities' => Facility::where('company_id', $companyId)->count(),
-            'suppliers' => Supplier::where('company_id', $companyId)->count(),
             'ingredients' => Ingredient::where('company_id', $companyId)->count(),
-            'certificates' => HalalCertificate::where('company_id', $companyId)->count(),
+            'ingredients_with_cert' => Ingredient::where('company_id', $companyId)
+                ->whereNotNull('sh_number')
+                ->count(),
             'products' => Product::where('company_id', $companyId)->count(),
         ];
 

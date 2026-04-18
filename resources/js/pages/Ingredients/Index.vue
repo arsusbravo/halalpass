@@ -13,14 +13,15 @@ const props = defineProps<{
     ingredients: Array<{
         id: number; name: string; code: string | null; type: string; category: string;
         supplier: { name: string } | null;
-        halal_certificates: Array<{ status: string }>;
-        children_recursive: Array<{ id: number; name: string; code: string | null; type: string; halal_certificates: Array<{ status: string }> }>;
+        brand: string | null;
+        cert_status: string | null;
+        children_recursive: Array<{ id: number; name: string; code: string | null; type: string; cert_status: string | null }>;
     }>;
 }>();
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' }, { title: 'Ingredients', href: '/ingredients' }];
 const deleteId = ref<number | null>(null);
 function handleDelete() { if (deleteId.value) { router.delete(`/ingredients/${deleteId.value}`); deleteId.value = null; } }
-function certStatus(certs?: Array<{ status: string }> | null): string { return certs?.length ? certs[0].status : 'missing'; }
+
 const categoryLabels: Record<string, string> = { bahan_baku: 'Raw Material', bahan_tambahan: 'Additive', bahan_penolong: 'Processing Aid' };
 </script>
 
@@ -30,9 +31,11 @@ const categoryLabels: Record<string, string> = { bahan_baku: 'Raw Material', bah
         <div class="p-4">
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ t('Ingredients') }}</h2>
-                <Link href="/ingredients/create" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">{{ t('Add Ingredient') }}</Link>
+                <div class="flex gap-2">
+                    <Link href="/ingredients/bulk" class="rounded-lg border border-emerald-600 px-4 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950">{{ t('Bulk Add') }}</Link>
+                    <Link href="/ingredients/create" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">+ {{ t('Add Ingredient') }}</Link>
+                </div>
             </div>
-
             <div class="overflow-hidden rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
                 <table class="w-full text-left text-sm">
                     <thead class="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50">
@@ -58,8 +61,11 @@ const categoryLabels: Record<string, string> = { bahan_baku: 'Raw Material', bah
                                 <td class="px-4 py-3 text-gray-500">{{ ing.code ?? '-' }}</td>
                                 <td class="px-4 py-3 text-gray-500">{{ ing.type === 'simple' ? t('Simple Material') : t('Composite Material') }}</td>
                                 <td class="px-4 py-3 text-gray-500">{{ t(categoryLabels[ing.category] ?? ing.category) }}</td>
-                                <td class="px-4 py-3 text-gray-500">{{ ing.supplier?.name ?? '-' }}</td>
-                                <td class="px-4 py-3"><HalalStatusBadge :status="certStatus(ing.halal_certificates)" size="sm" /></td>
+                                <td class="px-4 py-3 text-gray-500">{{ ing.brand ?? '-' }}</td>
+                                <td class="px-4 py-3">
+                                    <HalalStatusBadge v-if="ing.cert_status" :status="ing.cert_status" size="sm" />
+                                    <span v-else class="text-xs text-gray-400">-</span>
+                                </td>
                                 <td class="px-4 py-3">
                                     <div class="flex gap-2">
                                         <Link :href="`/ingredients/${ing.id}/edit`" class="text-sm text-blue-600 hover:text-blue-800">{{ t('Edit') }}</Link>
@@ -77,7 +83,10 @@ const categoryLabels: Record<string, string> = { bahan_baku: 'Raw Material', bah
                                 <td class="px-4 py-2 text-gray-400">{{ t('Simple Material') }}</td>
                                 <td class="px-4 py-2"></td>
                                 <td class="px-4 py-2"></td>
-                                <td class="px-4 py-2"><HalalStatusBadge :status="certStatus(child.halal_certificates)" size="sm" /></td>
+                                <td class="px-4 py-2">
+                                    <HalalStatusBadge v-if="child.cert_status" :status="child.cert_status" size="sm" />
+                                    <span v-else class="text-xs text-gray-400">-</span>
+                                </td>
                                 <td class="px-4 py-2"></td>
                             </tr>
                         </template>

@@ -3,343 +3,324 @@
 namespace App\Services;
 
 use App\DTOs\AuditExportDTO;
-use App\Models\AuditLog;
-use App\Models\HalalCertificate;
+use App\Models\Facility;
 use App\Models\Ingredient;
 use App\Models\Product;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
 class AuditExportService
 {
-    private IngredientService $ingredientService;
-
-    public function __construct(IngredientService $ingredientService)
-    {
-        $this->ingredientService = $ingredientService;
-    }
-
     /**
-     * Generate the full audit-ready export as a ZIP file.
-     * Returns the path to the ZIP file in storage.
+     * Generate a ZIP export for SIHALAL submission.
      */
     public function generateExport(AuditExportDTO $dto): string
     {
-        $timestamp = Carbon::now()->format('Ymd_His');
-        $zipFilename = "audit_export_{$dto->company_id}_{$timestamp}.zip";
-        $zipPath = storage_path("app/exports/{$zipFilename}");
+        $companyId = $dto->company_id;
 
-        // Ensure the directory exists
-        if (!is_dir(dirname($zipPath))) {
-            mkdir(dirname($zipPath), 0755, true);
+        // Load data
+        $ingredients = Ingredient::where('company_id', $companyId)
+            ->with(['supplier', 'halalCertificates'])
+            ->orderBy('code')
+            ->get();
+
+        $productsQuery = Product::where('company_id', $companyId)->active()->with('ingredients');
+        if (!empty($dto->product_ids)) {
+            $productsQuery->whereIn('id', $dto->product_ids);
         }
+        $products = $productsQuery->orderBy('code')->get();
 
-        $zip = new ZipArchive();
-
-        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            throw new \RuntimeException("Could not create ZIP file at {$zipPath}");
+        // Create temp dir
+        $tempDir = storage_path('app/temp/export_' . uniqid());
+        if (!is_dir($tempDir)) {
+            mkdir($tempDir, 0755, true);
         }
 
         // 1. Daftar Bahan (Materials List)
-        $bahanCsv = $this->generateBahanList($dto);
-        $zip->addFromString('01_Daftar_Bahan.csv', $bahanCsv);
+        $this->generateDaftarBahan($ingredients, $tempDir);
 
         // 2. Matriks Bahan (Material Matrix)
         if ($dto->include_material_matrix) {
-            $matriksCsv = $this->generateMatriksBahan($dto);
-            $zip->addFromString('02_Matriks_Bahan.csv', $matriksCsv);
+            $this->generateMatriksBahan($products, $ingredients, $tempDir);
         }
 
-        // 3. Certificate summary
+        // 3. Daftar Sertifikat Halal (Certificate List)
+        $this->generateDaftarSertifikat($ingredients, $tempDir);
+
+        // 4. Certificate PDFs (from legacy certificates table if any)
         if ($dto->include_certificates) {
-            $certCsv = $this->generateCertificateSummary($dto);
-            $zip->addFromString('03_Daftar_Sertifikat_Halal.csv', $certCsv);
+            $this->copyCertificateFiles($ingredients, $tempDir);
         }
 
-        // 4. Copy actual certificate PDFs
-        if ($dto->include_certificates) {
-            $this->addCertificateFiles($zip, $dto);
+        // Create ZIP
+        $zipPath = storage_path('app/temp/export_' . date('Y-m-d_His') . '.zip');
+        $zip = new ZipArchive();
+        $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($tempDir, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        foreach ($files as $file) {
+            $relativePath = substr($file->getRealPath(), strlen($tempDir) + 1);
+            $zip->addFile($file->getRealPath(), $relativePath);
         }
 
         $zip->close();
 
-        // Log the export
-        $user = Auth::user();
-        if ($user) {
-            AuditLog::create([
-                'company_id' => $dto->company_id,
-                'user_id' => $user->id,
-                'auditable_type' => 'App\\Models\\Company',
-                'auditable_id' => $dto->company_id,
-                'action' => 'exported',
-                'new_values' => [
-                    'type' => 'audit_export',
-                    'filename' => $zipFilename,
-                    'product_ids' => $dto->product_ids,
-                    'facility_ids' => $dto->facility_ids,
-                ],
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-            ]);
-        }
+        // Cleanup temp dir
+        $this->deleteDirectory($tempDir);
 
         return $zipPath;
     }
 
     /**
-     * Generate the Daftar Bahan (Materials List) CSV.
-     * Format follows SIHALAL requirements.
+     * 01_Daftar_Bahan.csv — Complete ingredient list with certificate info.
      */
-    private function generateBahanList(AuditExportDTO $dto): string
+    private function generateDaftarBahan($ingredients, string $tempDir): void
     {
-        $ingredients = $this->getFilteredIngredients($dto);
+        $fp = fopen($tempDir . '/01_Daftar_Bahan.csv', 'w');
+        fprintf($fp, chr(0xEF) . chr(0xBB) . chr(0xBF)); // BOM for Excel
 
-        $rows = [];
-
-        // BOM for Excel UTF-8 compatibility
-        $rows[] = "\xEF\xBB\xBF" . implode(',', [
-            'No',
-            'Kode Bahan',
-            'Nama Bahan',
-            'Jenis Bahan',
-            'Kategori',
-            'Merek',
-            'Produsen',
-            'Negara Asal',
-            'Pemasok',
-            'No Sertifikat Halal',
-            'Lembaga Penerbit',
-            'Tanggal Kadaluarsa SH',
-            'Status SH',
+        fputcsv($fp, [
+            'No', 'Kode Bahan', 'Nama Bahan', 'Jenis Bahan', 'Kategori',
+            'Merek/Produsen', 'Tingkat Risiko', 'No Sertifikat Halal', 'Status Sertifikat',
         ]);
 
         $no = 1;
         foreach ($ingredients as $ingredient) {
-            $cert = $ingredient->halalCertificates->sortByDesc('expiry_date')->first();
+            $typeLabel = match ($ingredient->type) {
+                'composite' => 'Bahan Komposit',
+                default => 'Bahan Sederhana',
+            };
 
-            $rows[] = implode(',', [
+            $categoryLabel = match ($ingredient->category) {
+                'bahan_baku' => 'Bahan Baku',
+                'bahan_tambahan' => 'Bahan Tambahan',
+                'bahan_penolong' => 'Bahan Penolong',
+                default => $ingredient->category,
+            };
+
+            $riskLabel = match ($ingredient->halal_risk_level) {
+                'no_risk' => 'Tanpa Risiko',
+                'low_risk' => 'Risiko Rendah',
+                'medium_risk' => 'Risiko Sedang',
+                'high_risk' => 'Risiko Tinggi',
+                default => '-',
+            };
+
+            // Get certificate: inline first, fallback to relationship
+            $shNumber = $ingredient->sh_number;
+            $certStatusLabel = $this->getCertStatusLabel($ingredient);
+
+            // If no inline cert, check legacy certificates table
+            if (!$shNumber && $ingredient->halalCertificates->isNotEmpty()) {
+                $bestCert = $ingredient->halalCertificates->sortByDesc('created_at')->first();
+                $shNumber = $bestCert->sh_number;
+                $certStatusLabel = 'BERLAKU (Legacy)';
+            }
+
+            fputcsv($fp, [
                 $no++,
-                $this->csvEscape($ingredient->code),
-                $this->csvEscape($ingredient->name),
-                $ingredient->type === 'simple' ? 'Bahan Sederhana' : 'Bahan Komposit',
-                $this->categoryLabel($ingredient->category),
-                $this->csvEscape($ingredient->brand ?? '-'),
-                $this->csvEscape($ingredient->manufacturer ?? '-'),
-                $ingredient->origin_country ?? '-',
-                $this->csvEscape($ingredient->supplier?->name ?? '-'),
-                $this->csvEscape($cert?->sh_number ?? 'BELUM ADA'),
-                $this->csvEscape($cert?->issuing_body_name ?? $cert?->issuing_body ?? '-'),
-                $cert?->expiry_date?->format('d/m/Y') ?? '-',
-                $cert ? $this->statusLabel($cert->status) : 'BELUM ADA SERTIFIKAT',
+                $ingredient->code ?? '-',
+                $ingredient->name,
+                $typeLabel,
+                $categoryLabel,
+                $ingredient->brand ?? '-',
+                $riskLabel,
+                $shNumber ?? '-',
+                $certStatusLabel,
             ]);
         }
 
-        return implode("\n", $rows);
+        fclose($fp);
     }
 
     /**
-     * Generate the Matriks Bahan (Material Matrix) CSV.
-     * Cross-reference: products × ingredients with cert status.
+     * 02_Matriks_Bahan.csv — Product × Ingredient matrix.
      */
-    private function generateMatriksBahan(AuditExportDTO $dto): string
+    private function generateMatriksBahan($products, $ingredients, string $tempDir): void
     {
-        $products = $this->getFilteredProducts($dto);
-        $allIngredients = $this->getFilteredIngredients($dto);
+        $fp = fopen($tempDir . '/02_Matriks_Bahan.csv', 'w');
+        fprintf($fp, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-        $rows = [];
-
-        // Header row: first columns + one column per product
+        // Header row: fixed columns + one column per product
         $header = ['No', 'Kode Bahan', 'Nama Bahan', 'No SH', 'Status SH'];
         foreach ($products as $product) {
-            $header[] = $this->csvEscape($product->name . ' (' . $product->code . ')');
+            $header[] = $product->name . ' (' . ($product->code ?? '') . ')';
         }
+        fputcsv($fp, $header);
 
-        $rows[] = "\xEF\xBB\xBF" . implode(',', $header);
-
-        // Data rows
         $no = 1;
-        foreach ($allIngredients as $ingredient) {
-            $cert = $ingredient->halalCertificates->sortByDesc('expiry_date')->first();
+        foreach ($ingredients as $ingredient) {
+            $shNumber = $ingredient->sh_number;
+            $statusLabel = $this->getCertStatusLabel($ingredient);
+
+            if (!$shNumber && $ingredient->halalCertificates->isNotEmpty()) {
+                $bestCert = $ingredient->halalCertificates->sortByDesc('created_at')->first();
+                $shNumber = $bestCert->sh_number;
+                $statusLabel = 'BERLAKU';
+            }
 
             $row = [
                 $no++,
-                $this->csvEscape($ingredient->code),
-                $this->csvEscape($ingredient->name),
-                $this->csvEscape($cert?->sh_number ?? 'BELUM ADA'),
-                $cert ? $this->statusLabel($cert->status) : 'TIDAK ADA',
+                $ingredient->code ?? '-',
+                $ingredient->name,
+                $shNumber ?? '-',
+                $statusLabel,
             ];
 
-            // For each product, mark if this ingredient is used
+            // Add percentage per product
             foreach ($products as $product) {
                 $pivot = $product->ingredients->firstWhere('id', $ingredient->id);
-
-                if ($pivot) {
-                    $percentage = $pivot->pivot->percentage
+                if ($pivot && $pivot->pivot) {
+                    $row[] = $pivot->pivot->percentage
                         ? number_format($pivot->pivot->percentage, 2) . '%'
                         : 'Ya';
-                    $critical = $pivot->pivot->is_critical ? ' [KRITIS]' : '';
-                    $row[] = $this->csvEscape($percentage . $critical);
                 } else {
                     $row[] = '-';
                 }
             }
 
-            $rows[] = implode(',', $row);
+            fputcsv($fp, $row);
         }
 
-        return implode("\n", $rows);
+        fclose($fp);
     }
 
     /**
-     * Generate a certificate summary CSV.
+     * 03_Daftar_Sertifikat_Halal.csv — Certificate summary.
      */
-    private function generateCertificateSummary(AuditExportDTO $dto): string
+    private function generateDaftarSertifikat($ingredients, string $tempDir): void
     {
-        $certificates = HalalCertificate::where('company_id', $dto->company_id)
-            ->with(['ingredient.supplier'])
-            ->orderBy('expiry_date', 'asc')
-            ->get();
+        $fp = fopen($tempDir . '/03_Daftar_Sertifikat_Halal.csv', 'w');
+        fprintf($fp, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-        $rows = [];
-
-        $rows[] = "\xEF\xBB\xBF" . implode(',', [
-            'No',
-            'No Sertifikat Halal',
-            'Nama Bahan',
-            'Lembaga Penerbit',
-            'Nama Lembaga',
-            'Tanggal Terbit',
-            'Tanggal Kadaluarsa',
-            'Sisa Hari',
-            'Status',
-            'File Tersedia',
+        fputcsv($fp, [
+            'No', 'No Sertifikat Halal', 'Nama Bahan', 'Merek/Produsen',
+            'Tingkat Risiko', 'Status', 'Keterangan',
         ]);
 
         $no = 1;
-        foreach ($certificates as $cert) {
-            $rows[] = implode(',', [
-                $no++,
-                $this->csvEscape($cert->sh_number),
-                $this->csvEscape($cert->ingredient?->name ?? '-'),
-                $cert->issuing_body,
-                $this->csvEscape($cert->issuing_body_name ?? '-'),
-                $cert->issue_date?->format('d/m/Y') ?? '-',
-                $cert->expiry_date->format('d/m/Y'),
-                $cert->days_until_expiry,
-                $this->statusLabel($cert->status),
-                $cert->document_path ? 'Ya' : 'Tidak',
-            ]);
+
+        foreach ($ingredients as $ingredient) {
+            $riskLevel = $ingredient->halal_risk_level ?? 'medium_risk';
+
+            // Skip no_risk ingredients
+            if ($riskLevel === 'no_risk') {
+                continue;
+            }
+
+            $riskLabel = match ($riskLevel) {
+                'low_risk' => 'Risiko Rendah',
+                'medium_risk' => 'Risiko Sedang',
+                'high_risk' => 'Risiko Tinggi',
+                default => '-',
+            };
+
+            if ($ingredient->sh_number) {
+                fputcsv($fp, [
+                    $no++,
+                    $ingredient->sh_number,
+                    $ingredient->name,
+                    $ingredient->brand ?? '-',
+                    $riskLabel,
+                    'BERLAKU SEUMUR HIDUP',
+                    'PP 42/2024',
+                ]);
+            } elseif ($ingredient->halalCertificates->isNotEmpty()) {
+                // Legacy certificates
+                foreach ($ingredient->halalCertificates as $cert) {
+                    fputcsv($fp, [
+                        $no++,
+                        $cert->sh_number,
+                        $ingredient->name,
+                        $ingredient->brand ?? '-',
+                        $riskLabel,
+                        $cert->is_expired ? 'KADALUARSA' : 'BERLAKU',
+                        $cert->issuing_body ?? '-',
+                    ]);
+                }
+            } else {
+                // Missing certificate
+                fputcsv($fp, [
+                    $no++,
+                    'BELUM ADA',
+                    $ingredient->name,
+                    $ingredient->brand ?? '-',
+                    $riskLabel,
+                    'BELUM ADA SERTIFIKAT',
+                    $riskLevel === 'low_risk' ? 'Opsional' : 'WAJIB',
+                ]);
+            }
         }
 
-        return implode("\n", $rows);
+        fclose($fp);
     }
 
     /**
-     * Add actual certificate PDF files to the ZIP.
+     * Copy certificate PDF files from legacy certificates table.
      */
-    private function addCertificateFiles(ZipArchive $zip, AuditExportDTO $dto): void
+    private function copyCertificateFiles($ingredients, string $tempDir): void
     {
-        $certificates = HalalCertificate::where('company_id', $dto->company_id)
-            ->whereNotNull('document_path')
-            ->with('ingredient')
-            ->get();
+        $certDir = $tempDir . '/sertifikat';
+        $hasCerts = false;
 
-        $zip->addEmptyDir('sertifikat');
-
-        foreach ($certificates as $cert) {
-            if ($cert->document_path && Storage::disk('local')->exists($cert->document_path)) {
-                $filename = $cert->ingredient
-                    ? str_replace(' ', '_', $cert->ingredient->name) . '_' . $cert->sh_number
-                    : $cert->sh_number;
-
-                $extension = pathinfo($cert->original_filename ?? $cert->document_path, PATHINFO_EXTENSION) ?: 'pdf';
-
-                $zip->addFile(
-                    Storage::disk('local')->path($cert->document_path),
-                    "sertifikat/{$filename}.{$extension}"
-                );
+        foreach ($ingredients as $ingredient) {
+            foreach ($ingredient->halalCertificates as $cert) {
+                if ($cert->document_path && Storage::disk('local')->exists($cert->document_path)) {
+                    if (!$hasCerts) {
+                        mkdir($certDir, 0755, true);
+                        $hasCerts = true;
+                    }
+                    $filename = $cert->sh_number . '_' . $ingredient->name . '.' .
+                        pathinfo($cert->document_path, PATHINFO_EXTENSION);
+                    $filename = preg_replace('/[^a-zA-Z0-9_\-.]/', '_', $filename);
+                    copy(Storage::disk('local')->path($cert->document_path), $certDir . '/' . $filename);
+                }
             }
         }
     }
 
-    // ----------------------------------------------------------------
-    //  Query helpers
-    // ----------------------------------------------------------------
-
-    private function getFilteredProducts(AuditExportDTO $dto)
+    /**
+     * Get human-readable certificate status for an ingredient.
+     */
+    private function getCertStatusLabel(Ingredient $ingredient): string
     {
-        $query = Product::where('company_id', $dto->company_id)
-            ->with('ingredients.halalCertificates');
+        $riskLevel = $ingredient->halal_risk_level ?? 'medium_risk';
 
-        if ($dto->product_ids) {
-            $query->whereIn('id', $dto->product_ids);
+        if ($riskLevel === 'no_risk') {
+            return 'TIDAK DIPERLUKAN';
         }
 
-        if ($dto->facility_ids) {
-            $query->whereIn('facility_id', $dto->facility_ids);
+        if ($ingredient->sh_number) {
+            return 'BERLAKU SEUMUR HIDUP';
         }
 
-        return $query->orderBy('name')->get();
+        if ($riskLevel === 'low_risk') {
+            return 'OPSIONAL - BELUM ADA';
+        }
+
+        return 'BELUM ADA SERTIFIKAT';
     }
 
-    private function getFilteredIngredients(AuditExportDTO $dto)
+    /**
+     * Recursively delete a directory.
+     */
+    private function deleteDirectory(string $dir): void
     {
-        $query = Ingredient::where('company_id', $dto->company_id)
-            ->with(['halalCertificates', 'supplier']);
+        if (!is_dir($dir)) return;
 
-        if ($dto->product_ids) {
-            $productIngredientIds = Product::whereIn('id', $dto->product_ids)
-                ->with('ingredients')
-                ->get()
-                ->pluck('ingredients')
-                ->flatten()
-                ->pluck('id')
-                ->unique();
+        $items = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
 
-            $query->whereIn('id', $productIngredientIds);
+        foreach ($items as $item) {
+            $item->isDir() ? rmdir($item->getRealPath()) : unlink($item->getRealPath());
         }
 
-        return $query->orderBy('code')->get();
-    }
-
-    // ----------------------------------------------------------------
-    //  Formatting helpers
-    // ----------------------------------------------------------------
-
-    private function csvEscape(?string $value): string
-    {
-        if ($value === null) {
-            return '';
-        }
-
-        // Wrap in quotes if the value contains commas, quotes, or newlines
-        if (str_contains($value, ',') || str_contains($value, '"') || str_contains($value, "\n")) {
-            return '"' . str_replace('"', '""', $value) . '"';
-        }
-
-        return $value;
-    }
-
-    private function categoryLabel(string $category): string
-    {
-        return match ($category) {
-            'bahan_baku' => 'Bahan Baku',
-            'bahan_tambahan' => 'Bahan Tambahan',
-            'bahan_penolong' => 'Bahan Penolong',
-            default => $category,
-        };
-    }
-
-    private function statusLabel(string $status): string
-    {
-        return match ($status) {
-            'valid' => 'Berlaku',
-            'expiring_soon' => 'Segera Kadaluarsa',
-            'expired' => 'KADALUARSA',
-            'missing' => 'TIDAK ADA',
-            default => $status,
-        };
+        rmdir($dir);
     }
 }

@@ -24,6 +24,15 @@ return new class extends Migration
                 'bahan_tambahan',   // Additive
                 'bahan_penolong',   // Processing aid
             ])->default('bahan_baku');
+            $table->enum('halal_risk_level', [
+                'no_risk',      // Naturally halal, no cert needed (egg, water, fresh vegetables)
+                'low_risk',     // Likely halal but cert recommended (refined sugar, table salt)
+                'medium_risk',  // Processed, cert required (MSG, coloring, preservatives)
+                'high_risk',    // Animal-derived or critical, cert mandatory (gelatin, enzymes, emulsifiers)
+            ])->default('medium_risk');
+            $table->string('sh_number')->nullable();
+            $table->date('cert_issue_date')->nullable();
+            $table->date('cert_expiry_date')->nullable();
             $table->text('specifications')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();

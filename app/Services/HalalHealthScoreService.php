@@ -190,14 +190,6 @@ class HalalHealthScoreService
             ->first();
     }
 
-    /**
-     * Score an individual ingredient based on its certificate and risk level.
-     *
-     * no_risk:     Always 100 — naturally halal, no cert needed
-     * low_risk:    100 if no cert, but 70 if cert exists but expiring (incentivize having one)
-     * medium_risk: Requires valid cert — 0 if missing/expired
-     * high_risk:   Requires valid cert — 0 if missing/expired
-     */
     private function scoreIngredient(Ingredient $ingredient, ?HalalCertificate $certificate): int
     {
         $riskLevel = $ingredient->halal_risk_level ?? 'medium_risk';
@@ -207,31 +199,25 @@ class HalalHealthScoreService
             return self::SCORE_VALID;
         }
     
-        // Low risk — compliant without cert, but check cert if it exists
+        // Check inline certificate first (simplified flow)
+        // Under GR 42/2024: if SH number exists, cert is valid for life
+        if ($ingredient->sh_number) {
+            return self::SCORE_VALID;
+        }
+    
+        // Low risk — compliant without cert
         if ($riskLevel === 'low_risk') {
-            if (!$certificate) {
-                return self::SCORE_VALID; // OK without cert
-            }
-            // If they provided a cert, check it's still valid
-            if ($certificate->is_expired) {
-                return self::SCORE_EXPIRING_SOON; // Warn, don't fail
-            }
+            // Check legacy certificate table as fallback
+            if (!$certificate) return self::SCORE_VALID;
+            if ($certificate->is_expired) return self::SCORE_EXPIRING_SOON;
             return self::SCORE_VALID;
         }
     
         // Medium and high risk — certificate required
-        if (!$certificate) {
-            return self::SCORE_MISSING;
-        }
-    
-        if ($certificate->is_expired) {
-            return self::SCORE_EXPIRED;
-        }
-    
-        if ($certificate->is_expiring_soon) {
-            return self::SCORE_EXPIRING_SOON;
-        }
-    
+        // Fall back to legacy certificate table
+        if (!$certificate) return self::SCORE_MISSING;
+        if ($certificate->is_expired) return self::SCORE_EXPIRED;
+        if ($certificate->is_expiring_soon) return self::SCORE_EXPIRING_SOON;
         return self::SCORE_VALID;
     }
 
