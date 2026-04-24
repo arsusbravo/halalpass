@@ -135,7 +135,7 @@ function hideSuggestions() {
         <div v-if="form.halal_risk_level !== 'no_risk'" class="space-y-4">
 
             <!-- Step 1: Search BPJPH -->
-            <div class="rounded-xl border-2 border-emerald-300 bg-gradient-to-br from-emerald-50 to-green-50 p-5 dark:border-emerald-700 dark:from-emerald-950/40 dark:to-green-950/40">
+            <div class="rounded-xl border-2 border-emerald-300 bg-linear-to-br from-emerald-50 to-green-50 p-5 dark:border-emerald-700 dark:from-emerald-950/40 dark:to-green-950/40">
                 <div class="mb-2 flex items-center gap-2">
                     <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">1</span>
                     <p class="text-sm font-semibold text-emerald-800 dark:text-emerald-200">{{ t('Find the halal certificate') }}</p>

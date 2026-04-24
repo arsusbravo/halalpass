@@ -93,11 +93,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // SJPH Documents
         Route::get('sjph/{facility}', [SjphController::class, 'show'])->name('sjph.show');
-        Route::post('sjph/{sjphDocument}/section', [SjphController::class, 'saveSection'])->name('sjph.save-section');
-        Route::post('sjph/{sjphDocument}/submit', [SjphController::class, 'submit'])->name('sjph.submit');
-        Route::post('sjph/{sjphDocument}/approve', [SjphController::class, 'approve'])->name('sjph.approve');
-        Route::post('sjph/{sjphDocument}/reject', [SjphController::class, 'reject'])->name('sjph.reject');
-        Route::post('sjph/{sjphDocument}/new-version', [SjphController::class, 'newVersion'])->name('sjph.new-version');
+        Route::post('sjph/{facility}/save', [SjphController::class, 'save'])->name('sjph.save');
+        Route::get('sjph/{facility}/download', [SjphController::class, 'generate'])->name('sjph.download');
 
         // Audit Export
         Route::get('export', [AuditExportController::class, 'index'])->name('export.index');

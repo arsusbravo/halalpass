@@ -2,6 +2,8 @@
 
 namespace App\DTOs;
 
+use App\Models\Facility;
+
 class FacilityDTO
 {
     public function __construct(
@@ -27,7 +29,7 @@ class FacilityDTO
             address: $data['address'],
             city: $data['city'],
             province: $data['province'],
-            code: $data['code'] ?? null,
+            code: $data['code'] ?? Facility::generateCode('FCT', $companyId),
             postal_code: $data['postal_code'] ?? null,
             phone: $data['phone'] ?? null,
             pic_name: $data['pic_name'] ?? null,

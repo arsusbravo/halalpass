@@ -2,6 +2,8 @@
 
 namespace App\DTOs;
 
+use App\Models\Product;
+
 class ProductDTO
 {
     /**
@@ -33,7 +35,7 @@ class ProductDTO
             company_id: $companyId,
             facility_id: $data['facility_id'],
             name: $data['name'],
-            code: $data['code'] ?? null,
+            code: $data['code'] ?? Product::generateCode('PRD', $companyId),
             brand: $data['brand'] ?? null,
             description: $data['description'] ?? null,
             category: $data['category'] ?? null,

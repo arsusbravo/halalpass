@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\DTOs\AuditExportDTO;
-use App\Models\Facility;
 use App\Models\Ingredient;
 use App\Models\Product;
 use Illuminate\Support\Facades\Storage;

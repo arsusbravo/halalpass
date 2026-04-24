@@ -187,24 +187,31 @@ class IngredientController extends Controller
         $created = 0;
     
         foreach ($names as $name) {
-            // Skip if already exists in this company
             $exists = Ingredient::where('company_id', $companyId)
                 ->where('name', $name)
                 ->exists();
-    
+
             if ($exists) {
                 continue;
             }
-    
+
+            // Check if another company already has this ingredient with a certificate
+            $existing = Ingredient::where('name', $name)
+                ->whereNotNull('sh_number')
+                ->where('sh_number', '!=', '')
+                ->first();
+
             Ingredient::create([
                 'company_id' => $companyId,
                 'name' => $name,
                 'code' => Ingredient::generateCode('BHN', $companyId),
                 'type' => 'simple',
-                'category' => 'bahan_baku',
-                'halal_risk_level' => $riskLevel,
+                'category' => $existing->category ?? 'bahan_baku',
+                'halal_risk_level' => $existing->halal_risk_level ?? 'medium_risk',
+                'brand' => $existing->brand ?? null,
+                'sh_number' => $existing->sh_number ?? null,
             ]);
-    
+
             $created++;
         }
     
