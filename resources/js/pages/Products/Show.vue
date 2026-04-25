@@ -72,7 +72,7 @@ function removeIngredient(ingredientId: number) {
     <Head :title="product.name" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-5xl p-4">
+        <div class="lg:mx-auto lg:max-w-5xl p-4">
             <!-- Header -->
             <div class="mb-4 flex items-center justify-between">
                 <div>
@@ -108,7 +108,7 @@ function removeIngredient(ingredientId: number) {
 
             <!-- Ingredient Score Breakdown -->
             <h3 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{{ t('Ingredient Details') }}</h3>
-            <div class="overflow-hidden rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
+            <div class="overflow-x-auto rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
                 <table class="w-full text-left text-sm">
                     <thead class="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50">
                         <tr>

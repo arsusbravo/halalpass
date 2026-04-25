@@ -36,7 +36,7 @@ function submit() {
     <Head :title="t('Bulk Add Ingredients')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-xl p-4">
+        <div class="lg:mx-auto lg:max-w-xl p-4">
             <h2 class="mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100">{{ t('Bulk Add Ingredients') }}</h2>
             <p class="mb-6 text-sm text-gray-500">{{ t('Add multiple ingredients at once. Enter one ingredient name per line.') }}</p>
 

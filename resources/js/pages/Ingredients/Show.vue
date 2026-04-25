@@ -63,7 +63,7 @@ function deleteIngredient() {
     <Head :title="ingredient.name" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-2xl p-4">
+        <div class="lg:mx-auto p-4">
             <!-- Header -->
             <div class="mb-6 flex items-start justify-between">
                 <div>

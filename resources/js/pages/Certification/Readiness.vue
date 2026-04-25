@@ -73,7 +73,7 @@ const passedCount = checkItems.filter(c => c.passed).length;
     <Head :title="t('Certification Readiness')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-4xl p-4">
+        <div class="lg:mx-auto lg:max-w-4xl p-4">
             <DeadlineBanner />
 
             <!-- Ready / Not Ready Banner -->

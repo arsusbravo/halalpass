@@ -19,7 +19,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     <Head :title="t('Add Facility')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-2xl p-4">
+        <div class="lg:mx-auto p-4">
             <h2 class="mb-6 text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {{ t('Add Facility') }}
             </h2>

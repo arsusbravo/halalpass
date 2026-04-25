@@ -47,7 +47,7 @@ function submit() {
 <template>
     <Head :title="t('Edit Ingredient')" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-xl p-4">
+        <div class="lg:mx-auto lg:max-w-xl p-4">
             <div class="mb-6 flex items-center justify-between">
                 <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ t('Edit Ingredient') }}</h2>
                 <span class="rounded bg-gray-100 px-2 py-1 font-mono text-xs text-gray-500 dark:bg-gray-800">{{ ingredient.code }}</span>

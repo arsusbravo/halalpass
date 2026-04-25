@@ -66,7 +66,7 @@ function generateExport() {
     <Head :title="t('Export')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-3xl p-4">
+        <div class="lg:mx-auto lg:max-w-3xl p-4">
             <h2 class="mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100">{{ t('Export for SIHALAL') }}</h2>
             <p class="mb-6 text-sm text-gray-500">{{ t('Generate a ZIP file with all documents needed for your SIHALAL submission.') }}</p>
 

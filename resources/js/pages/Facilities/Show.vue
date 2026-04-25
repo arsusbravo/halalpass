@@ -37,7 +37,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head :title="facility.name" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-4xl p-4">
+        <div class="lg:mx-auto lg:max-w-4xl p-4">
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ facility.name }}</h2>
                 <div class="flex gap-2">
@@ -84,7 +84,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <!-- Products in this facility -->
             <h3 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{{ t('Products') }} ({{ facility.products.length }})</h3>
-            <div class="overflow-hidden rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
+            <div class="overflow-x-auto rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
                 <table class="w-full text-left text-sm">
                     <thead class="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50">
                         <tr>

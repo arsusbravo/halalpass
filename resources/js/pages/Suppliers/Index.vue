@@ -23,7 +23,7 @@ function handleDelete() { if (deleteId.value) { router.delete(`/suppliers/${dele
                 <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ t('Suppliers') }}</h2>
                 <Link href="/suppliers/create" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">{{ t('Add Supplier') }}</Link>
             </div>
-            <div class="overflow-hidden rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
+            <div class="overflow-x-auto rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
                 <table class="w-full text-left text-sm">
                     <thead class="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50">
                         <tr>

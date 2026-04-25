@@ -23,7 +23,7 @@ function revokeToken(tokenId: number) { if (confirm(t('Are you sure?'))) router.
 <template>
     <Head :title="supplier.name" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-4xl p-4">
+        <div class="lg:mx-auto lg:max-w-4xl p-4">
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ supplier.name }}</h2>
                 <Link :href="`/suppliers/${supplier.id}/edit`" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">{{ t('Edit') }}</Link>
@@ -42,7 +42,7 @@ function revokeToken(tokenId: number) { if (confirm(t('Are you sure?'))) router.
 
             <!-- Ingredients from this supplier -->
             <h3 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{{ t('Ingredients') }} ({{ supplier.ingredients.length }})</h3>
-            <div class="mb-6 overflow-hidden rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
+            <div class="mb-6 overflow-x-auto rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
                 <table class="w-full text-left text-sm">
                     <thead class="border-b bg-gray-50 dark:bg-gray-800/50"><tr><th class="px-4 py-3 font-medium text-gray-500">{{ t('Ingredient Name') }}</th><th class="px-4 py-3 font-medium text-gray-500">{{ t('Code') }}</th><th class="px-4 py-3 font-medium text-gray-500">{{ t('Certificate Status') }}</th></tr></thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-800">

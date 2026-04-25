@@ -70,7 +70,7 @@ function download() {
     <Head :title="`SJPH — ${facility.name}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-3xl p-4">
+        <div class="lg:mx-auto lg:max-w-3xl p-4">
             <!-- Header -->
             <div class="mb-6 flex items-start justify-between">
                 <div>

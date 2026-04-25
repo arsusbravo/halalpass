@@ -37,7 +37,7 @@ function handleDelete() { if (deleteId.value) { router.delete(`/certificates/${d
                 <button @click="filterByStatus('expired')" :class="[filters.status === 'expired' ? 'bg-red-600 text-white' : 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300', 'rounded-lg px-3 py-1.5 text-sm font-medium transition']">{{ t('Expired') }} ({{ summary.expired }})</button>
             </div>
 
-            <div class="overflow-hidden rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
+            <div class="overflow-x-auto rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
                 <table class="w-full text-left text-sm">
                     <thead class="border-b bg-gray-50 dark:bg-gray-800/50">
                         <tr>

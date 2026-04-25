@@ -15,7 +15,7 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' 
 <template>
     <Head :title="certificate.sh_number" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-3xl p-4">
+        <div class="lg:mx-auto lg:max-w-3xl p-4">
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ t('Certificate Details') }}</h2>
                 <div class="flex gap-2">

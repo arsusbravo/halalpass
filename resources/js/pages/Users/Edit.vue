@@ -33,7 +33,7 @@ function submit() {
     <Head :title="t('Edit User')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-lg p-4">
+        <div class="lg:mx-auto lg:max-w-lg p-4">
             <h2 class="mb-6 text-xl font-semibold text-gray-900 dark:text-gray-100">{{ t('Edit User') }}</h2>
 
             <form @submit.prevent="submit" class="space-y-4">

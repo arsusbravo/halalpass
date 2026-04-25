@@ -73,7 +73,7 @@ function submit() {
     <Head :title="isEditing ? t('Edit Product') : t('Add Product')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-3xl p-4">
+        <div class="lg:mx-auto lg:max-w-3xl p-4">
             <h2 class="mb-6 text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {{ isEditing ? t('Edit Product') : t('Add Product') }}
             </h2>

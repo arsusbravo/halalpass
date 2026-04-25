@@ -31,12 +31,20 @@ const categoryLabels: Record<string, string> = { bahan_baku: 'Raw Material', bah
         <div class="p-4">
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ t('Ingredients') }}</h2>
-                <div class="flex gap-2">
-                    <Link href="/ingredients/bulk" class="rounded-lg border border-emerald-600 px-4 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950">{{ t('Bulk Add') }}</Link>
-                    <Link href="/ingredients/create" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">+ {{ t('Add Ingredient') }}</Link>
+                <div class="flex gap-3">
+                    <Link 
+                    href="/ingredients/bulk" 
+                    class="rounded-lg border border-emerald-600 px-4 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950">
+                        {{ t('Bulk Add') }}
+                    </Link>
+                    <Link 
+                    href="/ingredients/create" 
+                    class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">
+                        <strong>+</strong> <span class="max-md:hidden">{{ t('Add Ingredient') }}</span>
+                    </Link>
                 </div>
             </div>
-            <div class="overflow-hidden rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
+            <div class="overflow-x-auto rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border dark:bg-gray-900">
                 <table class="w-full text-left text-sm">
                     <thead class="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50">
                         <tr>

@@ -32,7 +32,7 @@ function submit() {
 <template>
     <Head :title="t('Add Ingredient')" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-xl p-4">
+        <div class="lg:mx-auto lg:max-w-xl p-4">
             <h2 class="mb-6 text-xl font-semibold text-gray-900 dark:text-gray-100">{{ t('Add Ingredient') }}</h2>
             <IngredientForm
                 :form="form"

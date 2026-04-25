@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
+import { ref, onMounted } from 'vue';
 import AppearanceTabs from '@/components/AppearanceTabs.vue';
 import Heading from '@/components/Heading.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { edit } from '@/routes/appearance';
 import type { BreadcrumbItem } from '@/types';
+
+const mounted = ref(false);
+onMounted(() => { mounted.value = true; });
 
 const breadcrumbItems: BreadcrumbItem[] = [
     {
@@ -28,7 +32,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
                     title="Appearance settings"
                     description="Update your account's appearance settings"
                 />
-                <AppearanceTabs />
+                <AppearanceTabs v-if="mounted" />
             </div>
         </SettingsLayout>
     </AppLayout>
