@@ -24,6 +24,7 @@ class Company extends Model
         'pic_name',
         'pic_phone',
         'status',
+        'signature_path',
     ];
 
     /* ----------------------------------------------------------------

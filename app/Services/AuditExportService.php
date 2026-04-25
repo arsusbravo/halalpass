@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\DTOs\AuditExportDTO;
+use App\Http\Controllers\SjphController;
+use App\Models\Facility;
 use App\Models\Ingredient;
 use App\Models\Product;
+use App\Models\SjphDocument;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
@@ -46,7 +49,10 @@ class AuditExportService
         // 3. Daftar Sertifikat Halal (Certificate List)
         $this->generateDaftarSertifikat($ingredients, $tempDir);
 
-        // 4. Certificate PDFs (from legacy certificates table if any)
+        // 4. SJPH Documents
+        $this->generateSjphFiles($companyId, $tempDir);
+
+        // 5. Certificate PDFs (from legacy certificates table if any)
         if ($dto->include_certificates) {
             $this->copyCertificateFiles($ingredients, $tempDir);
         }
@@ -134,6 +140,27 @@ class AuditExportService
         }
 
         fclose($fp);
+    }
+
+    private function generateSjphFiles(int $companyId, string $tempDir): void
+    {
+        $facilities = Facility::where('company_id', $companyId)->active()->get();
+        $controller = app(SjphController::class);
+    
+        foreach ($facilities as $facility) {
+            $document = SjphDocument::where('company_id', $companyId)
+                ->where('facility_id', $facility->id)
+                ->where('status', '!=', 'archived')
+                ->latest()
+                ->first();
+    
+            if (!$document) continue;
+    
+            $pdf = $controller->buildPdf($companyId, $facility);
+    
+            $filename = 'SJPH_' . preg_replace('/[^a-zA-Z0-9_]/', '_', $facility->name) . '.pdf';
+            file_put_contents($tempDir . '/' . $filename, $pdf->output());
+        }
     }
 
     /**

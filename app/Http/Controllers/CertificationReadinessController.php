@@ -34,12 +34,25 @@ class CertificationReadinessController extends Controller
                 ->latest()
                 ->first();
 
+            $completion = 0;
+            if ($sjph) {
+                if ($sjph->status === 'approved') {
+                    $completion = 100;
+                } else {
+                    $team = json_decode($sjph->tim_manajemen_halal ?? '{}', true);
+                    $training = json_decode($sjph->pelatihan_edukasi ?? '{}', true);
+                    $hasTeam = !empty($team['members']) && !empty($team['members'][0]['name']);
+                    $hasTraining = !empty($training['trainings']) && !empty($training['trainings'][0]['date']);
+                    $completion = ($hasTeam ? 50 : 0) + ($hasTraining ? 50 : 0);
+                }
+            }
+
             $sjphStatuses[] = [
                 'facility_id' => $facility->id,
                 'facility_name' => $facility->name,
                 'sjph_exists' => $sjph !== null,
                 'sjph_status' => $sjph?->status ?? 'not_started',
-                'sjph_completion' => $sjph?->completion_percentage ?? 0,
+                'sjph_completion' => $completion,
                 'sjph_approved' => $sjph?->status === 'approved',
             ];
         }

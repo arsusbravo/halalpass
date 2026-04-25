@@ -6,6 +6,7 @@ import {
     Building2,
     ChevronDown,
     Download,
+    Upload,
     LayoutGrid,
     LogOut,
     MoreHorizontal,
@@ -52,11 +53,13 @@ const mainNavItems = computed<NavItem[]>(() => {
 
     if (hasCompanyContext.value || !isOwner.value) {
         items.push(
+            { title: t('Company profile'), href: '/company-profile', icon: Building },
             { title: t('Facilities'), href: '/facilities', icon: Building2 },
             { title: t('Ingredients'), href: '/ingredients', icon: TreePine },
             { title: t('Products'), href: '/products', icon: Package },
             { title: t('Certification'), href: '/certification', icon: ShieldCheck },
             { title: t('Export'), href: '/export', icon: Download },
+            { title: 'SiHalal', href: 'https://ptsp.halal.go.id', external: true, icon: Upload },
         );
 
         if (isAdmin.value) {
@@ -76,8 +79,8 @@ const moreNavItems = computed<NavItem[]>(() => {
 });
 
 const footerNavItems = computed<NavItem[]>(() => [
-    { title: t('SIHALAL Docs'), href: 'https://sihalal.halal.go.id', icon: ScrollText },
-    { title: t('Documentation'), href: 'https://laravel.com/docs/starter-kits#vue', icon: BookOpen },
+    { title: t('SIHALAL Docs'), href: 'https://ptsp.halal.go.id', icon: ScrollText },
+    { title: t('Documentation'), href: '/doc.html', icon: BookOpen },
 ]);
 
 function leaveCompany() {

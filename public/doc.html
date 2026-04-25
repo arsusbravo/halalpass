@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HalalPass 2026 — Documentation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --green-50: #f0fdf4; --green-100: #dcfce7; --green-200: #bbf7d0;
@@ -13,13 +13,12 @@
             --green-800: #166534; --green-900: #14532d; --green-950: #052e16;
             --amber-50: #fffbeb; --amber-500: #f59e0b; --amber-600: #d97706; --amber-700: #b45309;
             --red-50: #fef2f2; --red-500: #ef4444; --red-600: #dc2626;
-            --blue-50: #eff6ff; --blue-500: #3b82f6; --blue-600: #2563eb;
+            --blue-50: #eff6ff; --blue-500: #3b82f6;
             --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb;
             --gray-300: #d1d5db; --gray-400: #9ca3af; --gray-500: #6b7280;
             --gray-600: #4b5563; --gray-700: #374151; --gray-800: #1f2937; --gray-900: #111827;
-            --sidebar-w: 280px;
+            --sidebar-w: 260px;
             --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; scroll-padding-top: 80px; }
@@ -28,500 +27,157 @@
         [data-lang="id"] .lang-en { display: none; }
         .sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; background: var(--green-950); color: #fff; overflow-y: auto; z-index: 50; padding: 24px 0; display: flex; flex-direction: column; }
         .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 16px; }
-        .sidebar-logo h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
-        .sidebar-logo h1 span { color: var(--green-400); }
+        .sidebar-logo h1 { font-size: 18px; font-weight: 800; } .sidebar-logo h1 span { color: #4ade80; }
         .sidebar-logo p { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
         .sidebar nav { flex: 1; padding: 0 12px; }
         .sidebar nav a { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.15s; }
         .sidebar nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
-        .sidebar nav a.active { background: rgba(255,255,255,0.12); color: var(--green-400); }
+        .sidebar nav a.active { background: rgba(255,255,255,0.12); color: #4ade80; }
         .sidebar nav .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.3); padding: 16px 12px 6px; display: block; }
         .sidebar nav a .num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 5px; background: rgba(255,255,255,0.1); font-size: 10px; font-weight: 700; flex-shrink: 0; }
         .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto; }
         .lang-switch { display: flex; gap: 4px; }
         .lang-switch button { padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: var(--font-body); }
         .lang-switch button.active { background: var(--green-600); border-color: var(--green-600); color: #fff; }
-        .lang-switch button:hover:not(.active) { border-color: rgba(255,255,255,0.4); color: #fff; }
         .main { margin-left: var(--sidebar-w); min-height: 100vh; }
         .top-bar { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--gray-200); padding: 16px 48px; display: flex; align-items: center; justify-content: space-between; }
-        .top-bar .breadcrumb { font-size: 13px; color: var(--gray-400); }
-        .top-bar .breadcrumb strong { color: var(--gray-700); }
+        .top-bar .breadcrumb { font-size: 13px; color: var(--gray-400); } .top-bar .breadcrumb strong { color: var(--gray-700); }
         .top-bar .lang-switch button:not(.active) { border-color: var(--gray-300); color: var(--gray-500); }
         .content { max-width: 820px; margin: 0 auto; padding: 40px 48px 120px; }
-        .content h1 { font-size: 32px; font-weight: 800; color: var(--green-800); margin: 48px 0 16px; letter-spacing: -0.5px; line-height: 1.2; }
-        .content h1:first-child { margin-top: 0; }
-        .content h2 { font-size: 22px; font-weight: 700; color: var(--green-700); margin: 36px 0 12px; letter-spacing: -0.3px; }
-        .content h3 { font-size: 17px; font-weight: 700; color: var(--gray-800); margin: 28px 0 8px; }
+        .content h1 { font-size: 28px; font-weight: 800; color: var(--green-800); margin: 48px 0 16px; letter-spacing: -0.5px; line-height: 1.2; } .content h1:first-child { margin-top: 0; }
+        .content h2 { font-size: 20px; font-weight: 700; color: var(--green-700); margin: 32px 0 12px; }
+        .content h3 { font-size: 16px; font-weight: 700; color: var(--gray-800); margin: 24px 0 8px; }
         .content p { margin-bottom: 14px; font-size: 15px; color: var(--gray-600); }
         .content ul, .content ol { margin: 0 0 16px 24px; font-size: 15px; color: var(--gray-600); }
-        .content li { margin-bottom: 6px; }
-        .content li strong { color: var(--gray-800); }
-        .content code { font-family: var(--font-mono); background: var(--gray-100); padding: 2px 6px; border-radius: 4px; font-size: 13px; color: var(--green-700); }
-        .hs-callout { background: var(--green-50); border: 1px solid var(--green-200); border-radius: 10px; padding: 14px 18px; margin: 12px 0 20px; font-size: 14px; }
-        .hs-callout::before { content: '🛡️ HalalPass'; font-weight: 700; color: var(--green-700); display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .content li { margin-bottom: 6px; } .content li strong { color: var(--gray-800); }
+        .info-box { border-radius: 10px; padding: 14px 18px; margin: 12px 0 20px; font-size: 14px; }
+        .info-box.blue { background: var(--blue-50); border: 1px solid #bfdbfe; }
+        .info-box.green { background: var(--green-50); border: 1px solid var(--green-200); }
+        .info-box.amber { background: var(--amber-50); border: 1px solid #fde68a; }
         table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 14px; }
         th { background: var(--green-800); color: #fff; text-align: left; padding: 10px 14px; font-weight: 600; font-size: 13px; }
         th:first-child { border-radius: 8px 0 0 0; } th:last-child { border-radius: 0 8px 0 0; }
         td { padding: 10px 14px; border-bottom: 1px solid var(--gray-200); color: var(--gray-600); }
         tr:hover td { background: var(--gray-50); }
-        .step { display: flex; gap: 16px; margin: 20px 0; padding: 20px; border: 1px solid var(--gray-200); border-radius: 12px; background: #fff; transition: box-shadow 0.2s; }
-        .step:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-        .step-num { flex-shrink: 0; width: 44px; height: 44px; border-radius: 12px; background: var(--green-100); color: var(--green-700); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; }
-        .step-content { flex: 1; }
-        .step-content h3 { margin: 0 0 6px; font-size: 16px; }
-        .step-content p { margin: 0 0 8px; font-size: 14px; }
+        .step { display: flex; gap: 16px; margin: 20px 0; padding: 20px; border: 1px solid var(--gray-200); border-radius: 12px; background: #fff; transition: box-shadow 0.2s; } .step:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .step-num { flex-shrink: 0; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; }
+        .step-num.inside { background: var(--green-100); color: var(--green-700); }
+        .step-num.outside { background: var(--gray-100); color: var(--gray-500); }
+        .step-content { flex: 1; } .step-content h3 { margin: 0 0 6px; font-size: 16px; } .step-content p { margin: 0 0 8px; font-size: 14px; }
+        .step-tag { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+        .step-tag.app { background: var(--green-100); color: var(--green-700); }
+        .step-tag.ext { background: var(--gray-100); color: var(--gray-500); }
         .badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
         .badge-green { background: var(--green-100); color: var(--green-700); }
         .badge-amber { background: var(--amber-50); color: var(--amber-700); }
         .badge-red { background: var(--red-50); color: var(--red-600); }
-        .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 16px 0 24px; }
-        .role-card { border: 1px solid var(--gray-200); border-radius: 12px; padding: 20px; }
-        .role-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-        .role-card .scope { font-size: 12px; color: var(--gray-400); margin-bottom: 10px; }
-        .role-card ul { margin: 0; padding: 0; list-style: none; font-size: 13px; }
-        .role-card ul li { padding: 3px 0; color: var(--gray-600); }
-        .role-card ul li::before { content: '✓ '; color: var(--green-500); font-weight: 700; }
         .deadline-banner { background: linear-gradient(135deg, var(--green-800), var(--green-950)); color: #fff; border-radius: 14px; padding: 28px 32px; margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; }
         .deadline-banner h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; color: #fff; }
         .deadline-banner p { font-size: 14px; opacity: 0.8; margin: 0; color: rgba(255,255,255,0.8); }
-        .deadline-banner .date { font-size: 28px; font-weight: 800; color: var(--green-400); white-space: nowrap; }
-        /* Value prop cards */
+        .deadline-banner .date { font-size: 28px; font-weight: 800; color: #4ade80; white-space: nowrap; }
         .value-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
-        .value-card { border-radius: 12px; padding: 20px; }
-        .value-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
-        .value-card p { font-size: 13px; margin: 0; }
-        .value-card.without { background: var(--red-50); border: 1px solid #fecaca; }
-        .value-card.without h4 { color: var(--red-600); }
-        .value-card.without h4::before { content: '❌ '; }
-        .value-card.with { background: var(--green-50); border: 1px solid var(--green-200); }
-        .value-card.with h4 { color: var(--green-700); }
-        .value-card.with h4::before { content: '✅ '; }
-        /* Flow diagram */
-        .flow-diagram { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 20px 0; }
-        .flow-step { background: var(--green-100); color: var(--green-800); padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; }
-        .flow-step.external { background: var(--gray-100); color: var(--gray-600); }
-        .flow-step.result { background: var(--green-800); color: #fff; }
-        .flow-arrow { color: var(--gray-400); font-size: 18px; }
-        /* Readiness visual */
+        .value-card { border-radius: 12px; padding: 20px; } .value-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; } .value-card p { font-size: 13px; margin: 0; }
+        .value-card.without { background: var(--red-50); border: 1px solid #fecaca; } .value-card.without h4 { color: var(--red-600); } .value-card.without h4::before { content: '❌ '; }
+        .value-card.with { background: var(--green-50); border: 1px solid var(--green-200); } .value-card.with h4 { color: var(--green-700); } .value-card.with h4::before { content: '✅ '; }
         .readiness-example { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px; margin: 20px 0; }
         .readiness-check { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; }
-        .check-pass { color: var(--green-700); font-weight: 600; }
-        .check-pass::before { content: '✅ '; }
-        .check-fail { color: var(--red-600); font-weight: 600; }
-        .check-fail::before { content: '❌ '; }
-        @media (max-width: 900px) {
-            .sidebar { display: none; } .main { margin-left: 0; } .content { padding: 24px 20px 80px; }
-            .top-bar { padding: 12px 20px; } .deadline-banner { flex-direction: column; text-align: center; gap: 12px; }
-            .value-grid { grid-template-columns: 1fr; }
-        }
+        .check-pass { color: var(--green-700); font-weight: 600; } .check-pass::before { content: '✅ '; }
+        .check-fail { color: var(--red-600); font-weight: 600; } .check-fail::before { content: '❌ '; }
+        @media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; } .content { padding: 24px 20px 80px; } .top-bar { padding: 12px 20px; } .deadline-banner { flex-direction: column; text-align: center; gap: 12px; } .value-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body data-lang="en">
-
 <aside class="sidebar">
-    <div class="sidebar-logo">
-        <h1>Halal<span>Pass</span></h1>
-        <p>Documentation v1.0</p>
-    </div>
+    <div class="sidebar-logo"><h1>Halal<span>Pass</span></h1><p>User Guide v2.0</p></div>
     <nav>
-        <span class="section-label lang-en">Overview</span>
-        <span class="section-label lang-id">Ringkasan</span>
-        <a href="#introduction"><span class="num">1</span> <span class="lang-en">Introduction</span><span class="lang-id">Pendahuluan</span></a>
-        <a href="#regulatory"><span class="num">1.1</span> <span class="lang-en">Regulatory Background</span><span class="lang-id">Latar Belakang Regulasi</span></a>
-        <a href="#what-hp-does"><span class="num">1.2</span> <span class="lang-en">What HalalPass Does</span><span class="lang-id">Fungsi HalalPass</span></a>
-        <a href="#how-it-helps"><span class="num">1.3</span> <span class="lang-en">How It Helps You</span><span class="lang-id">Bagaimana Membantu Anda</span></a>
-
-        <span class="section-label lang-en">Certification Process</span>
-        <span class="section-label lang-id">Proses Sertifikasi</span>
-        <a href="#cert-flow"><span class="num">2</span> <span class="lang-en">Certification Flow</span><span class="lang-id">Alur Sertifikasi</span></a>
-        <a href="#step1"><span class="num">S1</span> <span class="lang-en">Company Registration</span><span class="lang-id">Registrasi Perusahaan</span></a>
-        <a href="#step2"><span class="num">S2</span> <span class="lang-en">Map Facilities</span><span class="lang-id">Pemetaan Fasilitas</span></a>
-        <a href="#step3"><span class="num">S3</span> <span class="lang-en">Identify Suppliers</span><span class="lang-id">Identifikasi Pemasok</span></a>
-        <a href="#step4"><span class="num">S4</span> <span class="lang-en">Inventory Ingredients</span><span class="lang-id">Inventaris Bahan</span></a>
-        <a href="#step5"><span class="num">S5</span> <span class="lang-en">Collect Certificates</span><span class="lang-id">Kumpulkan Sertifikat</span></a>
-        <a href="#step6"><span class="num">S6</span> <span class="lang-en">Material Matrix</span><span class="lang-id">Matriks Bahan</span></a>
-        <a href="#step7"><span class="num">S7</span> <span class="lang-en">SJPH Document</span><span class="lang-id">Dokumen SJPH</span></a>
-        <a href="#step8"><span class="num">S8</span> <span class="lang-en">Submit to SIHALAL</span><span class="lang-id">Kirim ke SIHALAL</span></a>
-        <a href="#step9"><span class="num">S9</span> <span class="lang-en">LPH Audit & Fatwa</span><span class="lang-id">Audit LPH & Fatwa</span></a>
-        <a href="#step10"><span class="num">S10</span> <span class="lang-en">Certificate Issued</span><span class="lang-id">Sertifikat Terbit</span></a>
-
-        <span class="section-label lang-en">Platform Guide</span>
-        <span class="section-label lang-id">Panduan Platform</span>
-        <a href="#roles"><span class="num">3</span> <span class="lang-en">User Roles</span><span class="lang-id">Peran Pengguna</span></a>
-        <a href="#features"><span class="num">4</span> <span class="lang-en">Key Features</span><span class="lang-id">Fitur Utama</span></a>
-        <a href="#expiry-radar"><span class="num">4.1</span> <span class="lang-en">Expiry Radar</span><span class="lang-id">Radar Kadaluarsa</span></a>
-        <a href="#supplier-portal"><span class="num">4.2</span> <span class="lang-en">Supplier Portal</span><span class="lang-id">Portal Pemasok</span></a>
-        <a href="#audit-export"><span class="num">4.3</span> <span class="lang-en">Audit Export</span><span class="lang-id">Ekspor Audit</span></a>
-        <a href="#cert-readiness"><span class="num">4.4</span> <span class="lang-en">Certification Readiness</span><span class="lang-id">Kesiapan Sertifikasi</span></a>
-
-        <span class="section-label lang-en">Reference</span>
-        <span class="section-label lang-id">Referensi</span>
-        <a href="#tech"><span class="num">5</span> <span class="lang-en">Tech Stack</span><span class="lang-id">Arsitektur</span></a>
-        <a href="#glossary"><span class="num">6</span> <span class="lang-en">Glossary</span><span class="lang-id">Glosarium</span></a>
+        <span class="section-label lang-en">Getting Started</span><span class="section-label lang-id">Memulai</span>
+        <a href="#intro"><span class="num">1</span> <span class="lang-en">What is HalalPass?</span><span class="lang-id">Apa itu HalalPass?</span></a>
+        <a href="#why"><span class="num">2</span> <span class="lang-en">Why You Need This</span><span class="lang-id">Mengapa Anda Butuh Ini</span></a>
+        <span class="section-label lang-en">Your Journey</span><span class="section-label lang-id">Perjalanan Anda</span>
+        <a href="#flow"><span class="num">3</span> <span class="lang-en">Complete Flow</span><span class="lang-id">Alur Lengkap</span></a>
+        <a href="#step1"><span class="num">①</span> <span class="lang-en">Register</span><span class="lang-id">Daftar</span></a>
+        <a href="#step2"><span class="num">②</span> <span class="lang-en">Add Facility</span><span class="lang-id">Fasilitas</span></a>
+        <a href="#step3"><span class="num">③</span> <span class="lang-en">Add Ingredients</span><span class="lang-id">Bahan</span></a>
+        <a href="#step4"><span class="num">④</span> <span class="lang-en">Create Products</span><span class="lang-id">Produk</span></a>
+        <a href="#step5"><span class="num">⑤</span> <span class="lang-en">SJPH Document</span><span class="lang-id">Dokumen SJPH</span></a>
+        <a href="#step6"><span class="num">⑥</span> <span class="lang-en">Check Readiness</span><span class="lang-id">Cek Kesiapan</span></a>
+        <a href="#step7"><span class="num">⑦</span> <span class="lang-en">Download Export</span><span class="lang-id">Unduh Ekspor</span></a>
+        <a href="#step8"><span class="num">⑧</span> <span class="lang-en">Submit to SIHALAL</span><span class="lang-id">Kirim ke SIHALAL</span></a>
+        <span class="section-label lang-en">Features</span><span class="section-label lang-id">Fitur</span>
+        <a href="#ingredients-feature"><span class="num">4</span> <span class="lang-en">Ingredients & Certificates</span><span class="lang-id">Bahan & Sertifikat</span></a>
+        <a href="#risk-levels"><span class="num">5</span> <span class="lang-en">Risk Levels</span><span class="lang-id">Tingkat Risiko</span></a>
+        <a href="#readiness"><span class="num">6</span> <span class="lang-en">Certification Readiness</span><span class="lang-id">Kesiapan Sertifikasi</span></a>
+        <a href="#sjph"><span class="num">7</span> <span class="lang-en">SJPH Explained</span><span class="lang-id">Penjelasan SJPH</span></a>
+        <a href="#company-profile"><span class="num">8</span> <span class="lang-en">Company Profile</span><span class="lang-id">Profil Perusahaan</span></a>
+        <span class="section-label lang-en">Reference</span><span class="section-label lang-id">Referensi</span>
+        <a href="#glossary"><span class="num">9</span> <span class="lang-en">Glossary</span><span class="lang-id">Glosarium</span></a>
+        <a href="#faq"><span class="num">10</span> <span class="lang-en">FAQ</span><span class="lang-id">Pertanyaan Umum</span></a>
     </nav>
-    <div class="sidebar-footer">
-        <div class="lang-switch">
-            <button onclick="setLang('en')" id="btn-en" class="active">EN</button>
-            <button onclick="setLang('id')" id="btn-id">ID</button>
-        </div>
-    </div>
+    <div class="sidebar-footer"><div class="lang-switch"><button onclick="setLang('en')" id="btn-en" class="active">EN</button><button onclick="setLang('id')" id="btn-id">ID</button></div></div>
 </aside>
-
 <div class="main">
-    <div class="top-bar">
-        <div class="breadcrumb">HalalPass 2026 / <strong class="lang-en">Documentation</strong><strong class="lang-id">Dokumentasi</strong></div>
-        <div class="lang-switch">
-            <button onclick="setLang('en')" class="btn-en-top active">EN</button>
-            <button onclick="setLang('id')" class="btn-id-top">ID</button>
-        </div>
-    </div>
-
+    <div class="top-bar"><div class="breadcrumb">HalalPass 2026 / <strong class="lang-en">User Guide</strong><strong class="lang-id">Panduan Pengguna</strong></div><div class="lang-switch"><button onclick="setLang('en')" class="btn-en-top active">EN</button><button onclick="setLang('id')" class="btn-id-top">ID</button></div></div>
     <div class="content">
-
-        <div class="deadline-banner">
-            <div>
-                <h2 class="lang-en">Mandatory Halal Certification Deadline</h2>
-                <h2 class="lang-id">Batas Waktu Sertifikasi Halal Wajib</h2>
-                <p class="lang-en">All food, beverages, cosmetics & pharmaceuticals must be halal-certified</p>
-                <p class="lang-id">Seluruh makanan, minuman, kosmetik & farmasi wajib bersertifikat halal</p>
-            </div>
-            <div class="date">17 Oct 2026</div>
-        </div>
-
-        <!-- ============================== 1. INTRODUCTION ============================== -->
-        <h1 id="introduction"><span class="lang-en">1. Introduction</span><span class="lang-id">1. Pendahuluan</span></h1>
-
-        <p class="lang-en">HalalPass 2026 is a multi-tenant B2B SaaS platform designed to help Indonesian food manufacturers and exporters manage their halal supply chain compliance. The platform addresses the mandatory halal certification deadline set by the Indonesian government under Law No. 33/2014 and Government Regulation No. 42/2024.</p>
-        <p class="lang-id">HalalPass 2026 adalah platform SaaS B2B multi-tenant yang dirancang untuk membantu produsen makanan dan eksportir Indonesia mengelola kepatuhan rantai pasok halal mereka. Platform ini menyikapi batas waktu sertifikasi halal wajib yang ditetapkan pemerintah Indonesia berdasarkan UU No. 33/2014 dan PP No. 42/2024.</p>
-
-        <p class="lang-en" style="background: var(--blue-50); border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 18px; font-size: 14px;"><strong>Important:</strong> HalalPass does <em>not</em> issue halal certificates — only BPJPH (the government) can do that. HalalPass prepares all your documents, tracks all your certificates, and tells you exactly when you're ready to submit to SIHALAL. Think of it like a tax preparation app: it doesn't collect your taxes, but it makes sure your forms are correct and complete so you pass on the first try.</p>
-        <p class="lang-id" style="background: var(--blue-50); border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 18px; font-size: 14px;"><strong>Penting:</strong> HalalPass <em>tidak</em> menerbitkan sertifikat halal — hanya BPJPH (pemerintah) yang bisa melakukan itu. HalalPass menyiapkan semua dokumen Anda, melacak semua sertifikat, dan memberitahu Anda persis kapan Anda siap mengajukan ke SIHALAL. Bayangkan seperti aplikasi persiapan pajak: tidak memungut pajak Anda, tapi memastikan semua formulir benar dan lengkap agar lolos di percobaan pertama.</p>
-
-        <h2 id="regulatory"><span class="lang-en">1.1 Regulatory Background</span><span class="lang-id">1.1 Latar Belakang Regulasi</span></h2>
-
-        <p class="lang-en">Since 2014, Indonesia has required all food, beverage, cosmetic, pharmaceutical, and consumer goods products to obtain halal certification. The implementation follows a phased timeline:</p>
-        <p class="lang-id">Sejak 2014, Indonesia mewajibkan seluruh produk makanan, minuman, kosmetik, farmasi, dan barang konsumsi untuk memperoleh sertifikasi halal. Pelaksanaannya mengikuti jadwal bertahap:</p>
-
-        <table>
-            <tr><th><span class="lang-en">Phase</span><span class="lang-id">Fase</span></th><th><span class="lang-en">Products</span><span class="lang-id">Produk</span></th><th><span class="lang-en">Deadline</span><span class="lang-id">Batas Waktu</span></th></tr>
-            <tr><td><span class="lang-en">Phase 1</span><span class="lang-id">Fase 1</span></td><td><span class="lang-en">Food, Beverages, Slaughter (Medium/Large)</span><span class="lang-id">Makanan, Minuman, Sembelihan (Menengah/Besar)</span></td><td>17 Oct 2024</td></tr>
-            <tr><td><span class="lang-en">Phase 2</span><span class="lang-id">Fase 2</span></td><td><span class="lang-en">Food, Beverages (Micro/Small + Imports)</span><span class="lang-id">Makanan, Minuman (Mikro/Kecil + Impor)</span></td><td>17 Oct 2026</td></tr>
-            <tr><td><span class="lang-en">Phase 3</span><span class="lang-id">Fase 3</span></td><td><span class="lang-en">Cosmetics, Pharmaceuticals</span><span class="lang-id">Kosmetik, Farmasi</span></td><td>17 Oct 2026</td></tr>
-            <tr><td><span class="lang-en">Phase 4</span><span class="lang-id">Fase 4</span></td><td><span class="lang-en">Consumer Goods</span><span class="lang-id">Barang Konsumsi</span></td><td>17 Oct 2029</td></tr>
-        </table>
-
-        <p class="lang-en">Halal certificates are issued by BPJPH following inspection by a Halal Inspection Agency (LPH) and a halal fatwa from MUI. Certificates are valid for 4 years, or indefinitely if product composition does not change (under GR 42/2024).</p>
-        <p class="lang-id">Sertifikat halal diterbitkan oleh BPJPH setelah pemeriksaan oleh Lembaga Pemeriksa Halal (LPH) dan fatwa halal dari MUI. Sertifikat berlaku selama 4 tahun, atau tanpa batas waktu jika komposisi produk tidak berubah (berdasarkan PP 42/2024).</p>
-
-        <h2 id="what-hp-does"><span class="lang-en">1.2 What HalalPass Does</span><span class="lang-id">1.2 Fungsi HalalPass</span></h2>
-
-        <ul class="lang-en">
-            <li>Track all ingredients and their halal certificate status across the supply chain</li>
-            <li>Monitor certificate expiry dates with an automated <strong>Expiry Radar</strong></li>
-            <li>Calculate <strong>Halal Health Scores</strong> per product using a weakest-link algorithm</li>
-            <li>Manage the <strong>SJPH</strong> documentation required by BPJPH (11 criteria)</li>
-            <li>Generate audit-ready exports (Daftar Bahan + Matriks Bahan) for SIHALAL upload</li>
-            <li>Check your <strong>Certification Readiness</strong> — tells you exactly what's blocking you from submitting</li>
-            <li>Allow suppliers to upload certificates via a <strong>guest portal</strong></li>
-            <li>Send automated <strong>WhatsApp notifications</strong> when certificates are expiring</li>
-        </ul>
-        <ul class="lang-id">
-            <li>Melacak semua bahan dan status sertifikat halalnya di seluruh rantai pasok</li>
-            <li>Memantau tanggal kadaluarsa sertifikat dengan <strong>Radar Kadaluarsa</strong> otomatis</li>
-            <li>Menghitung <strong>Skor Kesehatan Halal</strong> per produk dengan algoritma mata rantai terlemah</li>
-            <li>Mengelola dokumentasi <strong>SJPH</strong> yang diwajibkan BPJPH (11 kriteria)</li>
-            <li>Membuat ekspor siap audit (Daftar Bahan + Matriks Bahan) untuk unggah ke SIHALAL</li>
-            <li>Memeriksa <strong>Kesiapan Sertifikasi</strong> — memberitahu persis apa yang menghalangi Anda untuk mengajukan</li>
-            <li>Memungkinkan pemasok mengunggah sertifikat melalui <strong>portal tamu</strong></li>
-            <li>Mengirim <strong>notifikasi WhatsApp</strong> otomatis saat sertifikat mendekati kadaluarsa</li>
-        </ul>
-
-        <!-- ============================== 1.3 HOW IT HELPS ============================== -->
-        <h2 id="how-it-helps"><span class="lang-en">1.3 How HalalPass Helps You</span><span class="lang-id">1.3 Bagaimana HalalPass Membantu Anda</span></h2>
-
-        <p class="lang-en">Here's the complete journey — from registration to getting your halal certificate:</p>
-        <p class="lang-id">Berikut perjalanan lengkap — dari registrasi hingga mendapatkan sertifikat halal Anda:</p>
-
-        <div class="flow-diagram">
-            <div class="flow-step">1. <span class="lang-en">Set up data</span><span class="lang-id">Isi data</span></div>
-            <span class="flow-arrow">→</span>
-            <div class="flow-step">2. <span class="lang-en">Fill SJPH</span><span class="lang-id">Isi SJPH</span></div>
-            <span class="flow-arrow">→</span>
-            <div class="flow-step">3. <span class="lang-en">Check Readiness</span><span class="lang-id">Cek Kesiapan</span></div>
-            <span class="flow-arrow">→</span>
-            <div class="flow-step">4. <span class="lang-en">Download Export</span><span class="lang-id">Unduh Ekspor</span></div>
-            <span class="flow-arrow">→</span>
-            <div class="flow-step external">5. <span class="lang-en">Upload to SIHALAL</span><span class="lang-id">Unggah ke SIHALAL</span></div>
-            <span class="flow-arrow">→</span>
-            <div class="flow-step external">6. <span class="lang-en">LPH Audit</span><span class="lang-id">Audit LPH</span></div>
-            <span class="flow-arrow">→</span>
-            <div class="flow-step result">7. <span class="lang-en">Certificate!</span><span class="lang-id">Sertifikat!</span></div>
-        </div>
-
-        <p class="lang-en">Steps 1–4 happen inside HalalPass. Steps 5–7 happen externally with BPJPH/LPH/MUI.</p>
-        <p class="lang-id">Langkah 1–4 terjadi di dalam HalalPass. Langkah 5–7 terjadi secara eksternal dengan BPJPH/LPH/MUI.</p>
-
-        <div class="value-grid">
-            <div class="value-card without">
-                <h4><span class="lang-en">Without HalalPass</span><span class="lang-id">Tanpa HalalPass</span></h4>
-                <p class="lang-en">Chase suppliers by email/WhatsApp for certificates. Track expiry dates in Excel. Manually build Daftar Bahan & Matriks Bahan. Fill SJPH on paper. Find out a certificate expired only when the auditor rejects your application. Repeat for weeks.</p>
-                <p class="lang-id">Kejar pemasok lewat email/WhatsApp untuk sertifikat. Lacak tanggal kadaluarsa di Excel. Buat Daftar Bahan & Matriks Bahan secara manual. Isi SJPH di kertas. Baru tahu sertifikat kadaluarsa saat auditor menolak aplikasi. Ulangi selama berminggu-minggu.</p>
-            </div>
-            <div class="value-card with">
-                <h4><span class="lang-en">With HalalPass</span><span class="lang-id">Dengan HalalPass</span></h4>
-                <p class="lang-en">All certificates in one place with automatic expiry tracking. Send suppliers a portal link — they upload directly. Products auto-scored: you see instantly which ones pass and which don't. One click to export everything SIHALAL needs. Readiness page tells you exactly what to fix before submitting.</p>
-                <p class="lang-id">Semua sertifikat di satu tempat dengan pelacakan kadaluarsa otomatis. Kirim pemasok link portal — mereka unggah langsung. Produk dinilai otomatis: Anda langsung tahu mana yang lulus dan mana yang tidak. Satu klik untuk ekspor semua yang dibutuhkan SIHALAL. Halaman kesiapan memberitahu persis apa yang harus diperbaiki sebelum mengajukan.</p>
-            </div>
-        </div>
-
-        <!-- ============================== 2. CERTIFICATION FLOW ============================== -->
-        <h1 id="cert-flow"><span class="lang-en">2. The Halal Certification Flow</span><span class="lang-id">2. Alur Sertifikasi Halal</span></h1>
-
-        <p class="lang-en">Here is the step-by-step process a company must follow to obtain halal certification in Indonesia, and how HalalPass supports each step.</p>
-        <p class="lang-id">Berikut adalah proses langkah demi langkah yang harus dilalui perusahaan untuk memperoleh sertifikasi halal di Indonesia, dan bagaimana HalalPass mendukung setiap langkah.</p>
-
-        <div class="step" id="step1"><div class="step-num">1</div><div class="step-content">
-            <h3><span class="lang-en">Company Registration</span><span class="lang-id">Registrasi Perusahaan</span></h3>
-            <p class="lang-en">Register your company with BPJPH through the SIHALAL portal. You need your NIB, NPWP, business permit, and company address.</p>
-            <p class="lang-id">Daftarkan perusahaan Anda ke BPJPH melalui portal SIHALAL. Anda memerlukan NIB, NPWP, izin usaha, dan alamat perusahaan.</p>
-            <div class="hs-callout"><span class="lang-en">The <strong>Company Profile</strong> page stores all registration info. Enter once, used everywhere.</span><span class="lang-id">Halaman <strong>Profil Perusahaan</strong> menyimpan semua informasi registrasi. Masukkan sekali, digunakan di mana saja.</span></div>
-        </div></div>
-
-        <div class="step" id="step2"><div class="step-num">2</div><div class="step-content">
-            <h3><span class="lang-en">Map Your Facilities</span><span class="lang-id">Petakan Fasilitas Anda</span></h3>
-            <p class="lang-en">Identify all production facilities where products are manufactured, packaged, or stored. Each facility needs its own details. BPJPH audits happen at the facility level.</p>
-            <p class="lang-id">Identifikasi semua fasilitas produksi tempat produk diproduksi, dikemas, atau disimpan. Setiap fasilitas memerlukan detailnya sendiri. Audit BPJPH dilakukan di tingkat fasilitas.</p>
-            <div class="hs-callout"><span class="lang-en">The <strong>Facilities</strong> page lets you register multiple sites with SJPH status tracking per facility.</span><span class="lang-id">Halaman <strong>Fasilitas</strong> memungkinkan Anda mendaftarkan beberapa lokasi dengan pelacakan status SJPH per fasilitas.</span></div>
-        </div></div>
-
-        <div class="step" id="step3"><div class="step-num">3</div><div class="step-content">
-            <h3><span class="lang-en">Identify Your Suppliers</span><span class="lang-id">Identifikasi Pemasok Anda</span></h3>
-            <p class="lang-en">List all suppliers providing raw materials, additives, and processing aids. If a supplier can't provide a valid halal certificate, your product cannot be certified.</p>
-            <p class="lang-id">Daftarkan semua pemasok yang menyediakan bahan baku, bahan tambahan, dan bahan penolong. Jika pemasok tidak dapat memberikan sertifikat halal yang valid, produk Anda tidak dapat disertifikasi.</p>
-            <div class="hs-callout"><span class="lang-en">The <strong>Suppliers</strong> page maintains your supplier database. Generate portal links for suppliers to upload certificates directly.</span><span class="lang-id">Halaman <strong>Pemasok</strong> mengelola database pemasok Anda. Buat link portal agar pemasok dapat mengunggah sertifikat secara langsung.</span></div>
-        </div></div>
-
-        <div class="step" id="step4"><div class="step-num">4</div><div class="step-content">
-            <h3><span class="lang-en">Inventory All Ingredients</span><span class="lang-id">Inventaris Semua Bahan</span></h3>
-            <p class="lang-en">Create a complete list of every ingredient. Categories: <strong>Bahan Baku</strong> (raw materials), <strong>Bahan Tambahan</strong> (additives), <strong>Bahan Penolong</strong> (processing aids). Each ingredient has a <strong>Halal Risk Level</strong>:</p>
-            <p class="lang-id">Buat daftar lengkap setiap bahan. Kategori: <strong>Bahan Baku</strong>, <strong>Bahan Tambahan</strong>, <strong>Bahan Penolong</strong>. Setiap bahan memiliki <strong>Tingkat Risiko Halal</strong>:</p>
-            <table>
-                <tr><th><span class="lang-en">Risk Level</span><span class="lang-id">Tingkat Risiko</span></th><th><span class="lang-en">Certificate?</span><span class="lang-id">Sertifikat?</span></th><th><span class="lang-en">Examples</span><span class="lang-id">Contoh</span></th></tr>
-                <tr><td><span class="badge badge-green"><span class="lang-en">No Risk</span><span class="lang-id">Tanpa Risiko</span></span></td><td><span class="lang-en">Not needed</span><span class="lang-id">Tidak perlu</span></td><td><span class="lang-en">Eggs, water, fresh vegetables, rice</span><span class="lang-id">Telur, air, sayuran segar, beras</span></td></tr>
-                <tr><td><span class="badge" style="background:#fefce8;color:#854d0e;"><span class="lang-en">Low Risk</span><span class="lang-id">Risiko Rendah</span></span></td><td><span class="lang-en">Recommended</span><span class="lang-id">Disarankan</span></td><td><span class="lang-en">Salt, sugar, wheat flour</span><span class="lang-id">Garam, gula, tepung terigu</span></td></tr>
-                <tr><td><span class="badge badge-amber"><span class="lang-en">Medium Risk</span><span class="lang-id">Risiko Sedang</span></span></td><td><span class="lang-en">Required</span><span class="lang-id">Diperlukan</span></td><td><span class="lang-en">MSG, coloring, preservatives, cooking oil</span><span class="lang-id">MSG, pewarna, pengawet, minyak goreng</span></td></tr>
-                <tr><td><span class="badge badge-red"><span class="lang-en">High Risk</span><span class="lang-id">Risiko Tinggi</span></span></td><td><span class="lang-en">Mandatory</span><span class="lang-id">Wajib</span></td><td><span class="lang-en">Gelatin, enzymes, emulsifiers, animal-derived</span><span class="lang-id">Gelatin, enzim, emulsifier, asal hewani</span></td></tr>
-            </table>
-            <div class="hs-callout"><span class="lang-en">The <strong>Ingredients</strong> page supports tree structures for composite materials. Each ingredient's risk level determines whether a certificate is required.</span><span class="lang-id">Halaman <strong>Bahan</strong> mendukung struktur pohon untuk bahan komposit. Tingkat risiko setiap bahan menentukan apakah sertifikat diperlukan.</span></div>
-        </div></div>
-
-        <div class="step" id="step5"><div class="step-num">5</div><div class="step-content">
-            <h3><span class="lang-en">Collect Halal Certificates (SH)</span><span class="lang-id">Kumpulkan Sertifikat Halal (SH)</span></h3>
-            <p class="lang-en">For every medium/high-risk ingredient, obtain a valid Halal Certificate from <strong>MUI</strong>, <strong>LPH</strong>, or <strong>Foreign HCB</strong> (e.g., JAKIM Malaysia, CICOT Thailand). This is typically the most time-consuming step.</p>
-            <p class="lang-id">Untuk setiap bahan risiko sedang/tinggi, dapatkan Sertifikat Halal yang valid dari <strong>MUI</strong>, <strong>LPH</strong>, atau <strong>HCB Asing</strong> (mis. JAKIM Malaysia, CICOT Thailand). Ini biasanya langkah yang paling memakan waktu.</p>
-            <div class="hs-callout"><span class="lang-en">The <strong>Certificate Vault</strong> stores all certificates. The <strong>Expiry Radar</strong> auto-tracks which are expiring. Or send suppliers a <strong>portal link</strong> — they upload directly without needing a login.</span><span class="lang-id"><strong>Penyimpanan Sertifikat</strong> menyimpan semua sertifikat. <strong>Radar Kadaluarsa</strong> otomatis melacak yang segera kadaluarsa. Atau kirim pemasok <strong>link portal</strong> — mereka unggah langsung tanpa perlu login.</span></div>
-        </div></div>
-
-        <div class="step" id="step6"><div class="step-num">6</div><div class="step-content">
-            <h3><span class="lang-en">Build the Material Matrix</span><span class="lang-id">Buat Matriks Bahan</span></h3>
-            <p class="lang-en">For each product, map which ingredients are used and in what percentage. Identify <strong>Titik Kritis Kehalalan</strong> (Critical Halal Points).</p>
-            <p class="lang-id">Untuk setiap produk, petakan bahan apa yang digunakan dan berapa persentasenya. Identifikasi <strong>Titik Kritis Kehalalan</strong>.</p>
-            <div class="hs-callout"><span class="lang-en">The <strong>Products</strong> page links ingredients with percentages and critical flags. The <strong>Halal Health Score</strong> is calculated automatically — one expired certificate makes the whole product non-compliant.</span><span class="lang-id">Halaman <strong>Produk</strong> menghubungkan bahan dengan persentase dan tanda kritis. <strong>Skor Kesehatan Halal</strong> dihitung secara otomatis — satu sertifikat kadaluarsa membuat seluruh produk tidak sesuai.</span></div>
-        </div></div>
-
-        <div class="step" id="step7"><div class="step-num">7</div><div class="step-content">
-            <h3><span class="lang-en">Prepare the SJPH Document</span><span class="lang-id">Siapkan Dokumen SJPH</span></h3>
-            <p class="lang-en">The SJPH (Sistem Jaminan Produk Halal) is a mandatory document with 11 criteria:</p>
-            <p class="lang-id">SJPH (Sistem Jaminan Produk Halal) adalah dokumen wajib dengan 11 kriteria:</p>
-            <table>
-                <tr><th>No</th><th><span class="lang-en">Criteria</span><span class="lang-id">Kriteria</span></th><th><span class="lang-en">Description</span><span class="lang-id">Deskripsi</span></th></tr>
-                <tr><td>1</td><td>Kebijakan Halal</td><td><span class="lang-en">Company halal policy statement</span><span class="lang-id">Pernyataan kebijakan halal perusahaan</span></td></tr>
-                <tr><td>2</td><td>Tim Manajemen Halal</td><td><span class="lang-en">Halal team: coordinator, members, roles</span><span class="lang-id">Tim halal: koordinator, anggota, peran</span></td></tr>
-                <tr><td>3</td><td>Pelatihan dan Edukasi</td><td><span class="lang-en">Training records and schedules</span><span class="lang-id">Catatan dan jadwal pelatihan</span></td></tr>
-                <tr><td>4</td><td>Bahan</td><td><span class="lang-en">Complete ingredient list with certificate status</span><span class="lang-id">Daftar lengkap bahan dengan status sertifikat</span></td></tr>
-                <tr><td>5</td><td>Produk</td><td><span class="lang-en">Product list with halal status</span><span class="lang-id">Daftar produk dengan status halal</span></td></tr>
-                <tr><td>6</td><td>Fasilitas Produksi</td><td><span class="lang-en">Production lines, capacity, halal-dedicated status</span><span class="lang-id">Lini produksi, kapasitas, status khusus halal</span></td></tr>
-                <tr><td>7</td><td>Prosedur Aktivitas Kritis</td><td><span class="lang-en">Critical activity SOPs</span><span class="lang-id">SOP aktivitas kritis</span></td></tr>
-                <tr><td>8</td><td>Kemampuan Telusur</td><td><span class="lang-en">Traceability: batch tracking, retention</span><span class="lang-id">Ketelusuran: pelacakan batch, retensi</span></td></tr>
-                <tr><td>9</td><td>Penanganan Produk Tidak Halal</td><td><span class="lang-en">Non-halal product handling procedures</span><span class="lang-id">Prosedur penanganan produk tidak halal</span></td></tr>
-                <tr><td>10</td><td>Audit Internal</td><td><span class="lang-en">Internal audit records and findings</span><span class="lang-id">Catatan dan temuan audit internal</span></td></tr>
-                <tr><td>11</td><td>Kaji Ulang Manajemen</td><td><span class="lang-en">Management review and action items</span><span class="lang-id">Kaji ulang manajemen dan tindak lanjut</span></td></tr>
-            </table>
-            <div class="hs-callout"><span class="lang-en">The <strong>SJPH</strong> wizard lets you fill each section incrementally with a progress bar. Submit for review and approval when 100% complete.</span><span class="lang-id">Wizard <strong>SJPH</strong> memungkinkan Anda mengisi setiap bagian secara bertahap dengan progress bar. Ajukan untuk review dan persetujuan saat 100% lengkap.</span></div>
-        </div></div>
-
-        <div class="step" id="step8"><div class="step-num">8</div><div class="step-content">
-            <h3><span class="lang-en">Check Readiness & Submit to SIHALAL</span><span class="lang-id">Cek Kesiapan & Kirim ke SIHALAL</span></h3>
-            <p class="lang-en">Before submitting, check the <strong>Certification Readiness</strong> page. It runs 8 checks and tells you exactly what's blocking you. When all checks pass, download the export ZIP and upload to sihalal.halal.go.id.</p>
-            <p class="lang-id">Sebelum mengajukan, periksa halaman <strong>Kesiapan Sertifikasi</strong>. Halaman ini menjalankan 8 pemeriksaan dan memberitahu persis apa yang menghalangi. Ketika semua pemeriksaan lulus, unduh ZIP ekspor dan unggah ke sihalal.halal.go.id.</p>
-            <div class="hs-callout"><span class="lang-en">The <strong>Export</strong> page generates a ZIP with Daftar Bahan, Matriks Bahan, certificate summary, and all certificate PDFs — formatted for SIHALAL upload.</span><span class="lang-id">Halaman <strong>Ekspor</strong> menghasilkan ZIP dengan Daftar Bahan, Matriks Bahan, ringkasan sertifikat, dan semua PDF sertifikat — dalam format SIHALAL.</span></div>
-        </div></div>
-
-        <div class="step" id="step9"><div class="step-num">9</div><div class="step-content">
-            <h3><span class="lang-en">LPH Audit & MUI Fatwa</span><span class="lang-id">Audit LPH & Fatwa MUI</span></h3>
-            <p class="lang-en">The LPH conducts document review and optionally a field audit. They verify your SJPH matches reality. If approved, MUI issues a halal fatwa. This step happens outside HalalPass — you interact directly with BPJPH and the assigned LPH.</p>
-            <p class="lang-id">LPH melakukan review dokumen dan opsional audit lapangan. Mereka memverifikasi SJPH sesuai kenyataan. Jika disetujui, MUI menerbitkan fatwa halal. Langkah ini terjadi di luar HalalPass — Anda berinteraksi langsung dengan BPJPH dan LPH yang ditugaskan.</p>
-        </div></div>
-
-        <div class="step" id="step10"><div class="step-num">10</div><div class="step-content">
-            <h3><span class="lang-en">Certificate Issuance</span><span class="lang-id">Penerbitan Sertifikat</span></h3>
-            <p class="lang-en">BPJPH issues the Halal Certificate. Valid for 4 years (or indefinitely under GR 42/2024). You must display the official BPJPH halal label on all certified products. The process takes 30–90 days from submission.</p>
-            <p class="lang-id">BPJPH menerbitkan Sertifikat Halal. Berlaku selama 4 tahun (atau tanpa batas berdasarkan PP 42/2024). Anda wajib menampilkan label halal resmi BPJPH pada semua produk bersertifikat. Proses ini memakan waktu 30–90 hari dari pengajuan.</p>
-        </div></div>
-
-        <!-- ============================== 3. USER ROLES ============================== -->
-        <h1 id="roles"><span class="lang-en">3. User Roles & Permissions</span><span class="lang-id">3. Peran & Hak Akses Pengguna</span></h1>
-
-        <div class="role-grid">
-            <div class="role-card" style="border-color: #7c3aed;">
-                <h4 style="color: #7c3aed;">Owner</h4>
-                <div class="scope"><span class="lang-en">Platform-level — sees all companies</span><span class="lang-id">Level platform — melihat semua perusahaan</span></div>
-                <ul><li class="lang-en">View & enter any company</li><li class="lang-id">Lihat & masuk ke perusahaan manapun</li><li class="lang-en">Full CRUD on everything</li><li class="lang-id">CRUD penuh pada semua data</li><li class="lang-en">Manage users & facilities</li><li class="lang-id">Kelola pengguna & fasilitas</li><li class="lang-en">Approve SJPH</li><li class="lang-id">Setujui SJPH</li></ul>
-            </div>
-            <div class="role-card" style="border-color: #2563eb;">
-                <h4 style="color: #2563eb;">Admin</h4>
-                <div class="scope"><span class="lang-en">Company-level — own company only</span><span class="lang-id">Level perusahaan — perusahaan sendiri saja</span></div>
-                <ul><li class="lang-en">Full CRUD within company</li><li class="lang-id">CRUD penuh dalam perusahaan</li><li class="lang-en">Manage users & facilities</li><li class="lang-id">Kelola pengguna & fasilitas</li><li class="lang-en">Edit company profile</li><li class="lang-id">Edit profil perusahaan</li><li class="lang-en">Approve SJPH</li><li class="lang-id">Setujui SJPH</li></ul>
-            </div>
-            <div class="role-card" style="border-color: #16a34a;">
-                <h4 style="color: #16a34a;">Manager</h4>
-                <div class="scope"><span class="lang-en">Company-level — own company only</span><span class="lang-id">Level perusahaan — perusahaan sendiri saja</span></div>
-                <ul><li class="lang-en">CRUD: products, ingredients, certificates, suppliers</li><li class="lang-id">CRUD: produk, bahan, sertifikat, pemasok</li><li class="lang-en">Fill SJPH sections</li><li class="lang-id">Isi bagian SJPH</li><li class="lang-en">Generate supplier portal links</li><li class="lang-id">Buat link portal pemasok</li></ul>
-            </div>
-            <div class="role-card" style="border-color: #6b7280;">
-                <h4 style="color: #6b7280;">Viewer</h4>
-                <div class="scope"><span class="lang-en">Company-level — read only</span><span class="lang-id">Level perusahaan — hanya baca</span></div>
-                <ul><li class="lang-en">View all company data</li><li class="lang-id">Lihat semua data perusahaan</li><li class="lang-en">Download exports</li><li class="lang-id">Unduh ekspor</li></ul>
-            </div>
-            <div class="role-card" style="border-color: #d97706;">
-                <h4 style="color: #d97706;"><span class="lang-en">Supplier (External)</span><span class="lang-id">Pemasok (Eksternal)</span></h4>
-                <div class="scope"><span class="lang-en">Token-based — no login</span><span class="lang-id">Berbasis token — tanpa login</span></div>
-                <ul><li class="lang-en">Upload halal certificates only</li><li class="lang-id">Hanya unggah sertifikat halal</li><li class="lang-en">No access to internal data</li><li class="lang-id">Tidak ada akses ke data internal</li></ul>
-            </div>
-        </div>
-
-        <!-- ============================== 4. KEY FEATURES ============================== -->
-        <h1 id="features"><span class="lang-en">4. Key Features</span><span class="lang-id">4. Fitur Utama</span></h1>
-
-        <h2 id="expiry-radar"><span class="lang-en">4.1 Expiry Radar & Halal Health Score</span><span class="lang-id">4.1 Radar Kadaluarsa & Skor Kesehatan Halal</span></h2>
-        <p class="lang-en">The Halal Health Score uses a <strong>weakest-link</strong> principle:</p>
-        <p class="lang-id">Skor Kesehatan Halal menggunakan prinsip <strong>mata rantai terlemah</strong>:</p>
-        <ol class="lang-en">
-            <li>For a product, collect ALL leaf-level ingredients (including sub-ingredients of composites)</li>
-            <li>Check each ingredient's risk level and best halal certificate</li>
-            <li>Score by risk: <span class="badge badge-green">No Risk = always 100</span> <span class="badge" style="background:#fefce8;color:#854d0e;">Low Risk = 100 without cert</span> <span class="badge badge-amber">Medium/High Risk without valid cert = 0</span></li>
-            <li>Product score = <strong>MINIMUM</strong> of all ingredient scores</li>
-            <li>Status: <span class="badge badge-green">100 = Compliant</span> <span class="badge badge-amber">70–99 = At Risk</span> <span class="badge badge-red">0 = Non-Compliant</span></li>
-        </ol>
-        <ol class="lang-id">
-            <li>Untuk suatu produk, kumpulkan SEMUA bahan level daun (termasuk sub-bahan dari komposit)</li>
-            <li>Periksa tingkat risiko dan sertifikat halal terbaik setiap bahan</li>
-            <li>Skor berdasarkan risiko: <span class="badge badge-green">Tanpa Risiko = selalu 100</span> <span class="badge" style="background:#fefce8;color:#854d0e;">Risiko Rendah = 100 tanpa sertifikat</span> <span class="badge badge-amber">Risiko Sedang/Tinggi tanpa sertifikat valid = 0</span></li>
-            <li>Skor produk = <strong>MINIMUM</strong> dari semua skor bahan</li>
-            <li>Status: <span class="badge badge-green">100 = Sesuai</span> <span class="badge badge-amber">70–99 = Berisiko</span> <span class="badge badge-red">0 = Tidak Sesuai</span></li>
-        </ol>
-
-        <h2 id="supplier-portal"><span class="lang-en">4.2 Supplier Portal</span><span class="lang-id">4.2 Portal Pemasok</span></h2>
-        <ol class="lang-en">
-            <li>Admin/Manager generates a portal link for a supplier</li>
-            <li>Link is shared via WhatsApp or email</li>
-            <li>Supplier opens the link — no login required</li>
-            <li>Supplier sees only their name, ingredient(s) needing certificates, and an upload form</li>
-            <li>Supplier fills in SH number, issuing body, expiry date, and uploads the PDF</li>
-            <li>Certificate is stored and linked automatically. Token is consumed.</li>
-        </ol>
-        <ol class="lang-id">
-            <li>Admin/Manager membuat link portal untuk pemasok</li>
-            <li>Link dibagikan via WhatsApp atau email</li>
-            <li>Pemasok membuka link — tidak perlu login</li>
-            <li>Pemasok hanya melihat nama mereka, bahan yang memerlukan sertifikat, dan formulir unggah</li>
-            <li>Pemasok mengisi nomor SH, lembaga penerbit, tanggal kadaluarsa, dan mengunggah PDF</li>
-            <li>Sertifikat disimpan dan ditautkan secara otomatis. Token dikonsumsi.</li>
-        </ol>
-
-        <h2 id="audit-export"><span class="lang-en">4.3 Audit Export</span><span class="lang-id">4.3 Ekspor Audit</span></h2>
-        <p class="lang-en">The Export page generates a ZIP containing:</p>
-        <p class="lang-id">Halaman Ekspor menghasilkan ZIP berisi:</p>
-        <ul>
-            <li><strong>Daftar Bahan</strong> — <span class="lang-en">CSV with all ingredients, categories, suppliers, certificate status</span><span class="lang-id">CSV dengan semua bahan, kategori, pemasok, status sertifikat</span></li>
-            <li><strong>Matriks Bahan</strong> — <span class="lang-en">CSV cross-referencing products vs. ingredients</span><span class="lang-id">CSV referensi silang produk vs. bahan</span></li>
-            <li><strong>Daftar Sertifikat Halal</strong> — <span class="lang-en">CSV summary of all certificates</span><span class="lang-id">CSV ringkasan semua sertifikat</span></li>
-            <li><span class="lang-en">Certificate PDF files in <code>/sertifikat</code> folder</span><span class="lang-id">File PDF sertifikat dalam folder <code>/sertifikat</code></span></li>
-        </ul>
-
-        <!-- ============================== 4.4 CERTIFICATION READINESS ============================== -->
-        <h2 id="cert-readiness"><span class="lang-en">4.4 Certification Readiness</span><span class="lang-id">4.4 Kesiapan Sertifikasi</span></h2>
-
-        <p class="lang-en">The <strong>Certification Readiness</strong> page is the final checkpoint before you submit to SIHALAL. It runs 8 automated checks and gives you a clear <span class="badge badge-green">Ready</span> or <span class="badge badge-amber">Not Ready</span> status.</p>
-        <p class="lang-id">Halaman <strong>Kesiapan Sertifikasi</strong> adalah pemeriksaan akhir sebelum Anda mengajukan ke SIHALAL. Halaman ini menjalankan 8 pemeriksaan otomatis dan memberikan status jelas: <span class="badge badge-green">Siap</span> atau <span class="badge badge-amber">Belum Siap</span>.</p>
-
-        <p class="lang-en"><strong>The 8 checks:</strong></p>
-        <p class="lang-id"><strong>8 pemeriksaan:</strong></p>
-
-        <div class="readiness-example">
-            <div class="readiness-check check-pass"><span class="lang-en">Production facilities registered</span><span class="lang-id">Fasilitas produksi terdaftar</span></div>
-            <div class="readiness-check check-pass"><span class="lang-en">Suppliers registered</span><span class="lang-id">Pemasok terdaftar</span></div>
-            <div class="readiness-check check-pass"><span class="lang-en">Ingredients inventoried</span><span class="lang-id">Bahan terinventaris</span></div>
-            <div class="readiness-check check-pass"><span class="lang-en">Products created</span><span class="lang-id">Produk terbuat</span></div>
-            <div class="readiness-check check-fail"><span class="lang-en">All required certificates are valid</span><span class="lang-id">Semua sertifikat yang diperlukan masih berlaku</span></div>
-            <div class="readiness-check check-fail"><span class="lang-en">All products are halal compliant</span><span class="lang-id">Semua produk sesuai halal</span></div>
-            <div class="readiness-check check-pass"><span class="lang-en">No certificates expiring within 90 days</span><span class="lang-id">Tidak ada sertifikat kadaluarsa dalam 90 hari</span></div>
-            <div class="readiness-check check-fail"><span class="lang-en">At least one SJPH document approved</span><span class="lang-id">Minimal satu dokumen SJPH disetujui</span></div>
-        </div>
-
-        <p class="lang-en">For each failed check, the page shows exactly what's wrong and provides a direct action button to fix it. For example, if certificates are missing, it lists every affected ingredient with its supplier name and a "Upload" or "Renew" button.</p>
-        <p class="lang-id">Untuk setiap pemeriksaan yang gagal, halaman ini menunjukkan persis apa yang salah dan menyediakan tombol aksi langsung untuk memperbaikinya. Misalnya, jika sertifikat hilang, halaman ini mencantumkan setiap bahan yang terdampak beserta nama pemasoknya dan tombol "Unggah" atau "Perbarui".</p>
-
-        <p class="lang-en">When all checks pass, you see a green <strong>"Ready to Submit to SIHALAL!"</strong> banner with a button to download your export ZIP.</p>
-        <p class="lang-id">Ketika semua pemeriksaan lulus, Anda melihat banner hijau <strong>"Siap Diajukan ke SIHALAL!"</strong> dengan tombol untuk mengunduh ZIP ekspor Anda.</p>
-
-        <p class="lang-en" style="background: var(--green-50); border: 1px solid var(--green-200); border-radius: 10px; padding: 14px 18px; font-size: 14px;"><strong>After downloading the export:</strong> Go to <a href="https://sihalal.halal.go.id" target="_blank" style="color: var(--green-700);">sihalal.halal.go.id</a>, log in with your BPJPH account, upload the files, and wait for the LPH to schedule your audit. The full process from submission to certificate issuance typically takes 30–90 days.</p>
-        <p class="lang-id" style="background: var(--green-50); border: 1px solid var(--green-200); border-radius: 10px; padding: 14px 18px; font-size: 14px;"><strong>Setelah mengunduh ekspor:</strong> Kunjungi <a href="https://sihalal.halal.go.id" target="_blank" style="color: var(--green-700);">sihalal.halal.go.id</a>, masuk dengan akun BPJPH Anda, unggah file-file tersebut, dan tunggu LPH menjadwalkan audit Anda. Proses lengkap dari pengajuan hingga penerbitan sertifikat biasanya memakan waktu 30–90 hari.</p>
-
-        <!-- ============================== 5. TECH ============================== -->
-        <h1 id="tech"><span class="lang-en">5. Technical Architecture</span><span class="lang-id">5. Arsitektur Teknis</span></h1>
-        <table>
-            <tr><th>Layer</th><th><span class="lang-en">Technology</span><span class="lang-id">Teknologi</span></th></tr>
-            <tr><td>Backend</td><td>PHP 8.3 + Laravel 12 (Service Classes + DTOs)</td></tr>
-            <tr><td>Frontend</td><td>Vue 3 (Composition API) + Inertia.js + Tailwind CSS v4</td></tr>
-            <tr><td>Database</td><td>MySQL 5.5+</td></tr>
-            <tr><td>Auth</td><td>Laravel Fortify + Inertia</td></tr>
-            <tr><td>Routes</td><td>Wayfinder (auto-generated typed helpers)</td></tr>
-            <tr><td>i18n</td><td>Laravel JSON translations (ID + EN)</td></tr>
-            <tr><td><span class="lang-en">Integrations</span><span class="lang-id">Integrasi</span></td><td>BPJPH SIHALAL (mocked), WhatsApp/Twilio (mocked)</td></tr>
-        </table>
-
-        <!-- ============================== 6. GLOSSARY ============================== -->
-        <h1 id="glossary"><span class="lang-en">6. Glossary</span><span class="lang-id">6. Glosarium</span></h1>
-        <table>
-            <tr><th><span class="lang-en">Term</span><span class="lang-id">Istilah</span></th><th><span class="lang-en">Definition</span><span class="lang-id">Definisi</span></th></tr>
-            <tr><td>BPJPH</td><td><span class="lang-en">Halal Product Assurance Agency — the government body managing halal certification</span><span class="lang-id">Badan Penyelenggara Jaminan Produk Halal — lembaga pemerintah yang mengelola sertifikasi halal</span></td></tr>
-            <tr><td>SIHALAL</td><td><span class="lang-en">BPJPH's online portal for halal certification applications</span><span class="lang-id">Portal online BPJPH untuk aplikasi sertifikasi halal</span></td></tr>
-            <tr><td>SH</td><td><span class="lang-en">Sertifikat Halal — Halal Certificate issued by BPJPH</span><span class="lang-id">Sertifikat Halal — diterbitkan oleh BPJPH</span></td></tr>
-            <tr><td>SJPH</td><td><span class="lang-en">Halal Product Assurance System — mandatory 11-criteria document</span><span class="lang-id">Sistem Jaminan Produk Halal — dokumen wajib 11 kriteria</span></td></tr>
-            <tr><td>LPH</td><td><span class="lang-en">Halal Inspection Body — accredited by BPJPH to conduct audits</span><span class="lang-id">Lembaga Pemeriksa Halal — terakreditasi BPJPH untuk melakukan audit</span></td></tr>
-            <tr><td>MUI</td><td><span class="lang-en">Indonesian Ulema Council — issues halal fatwas</span><span class="lang-id">Majelis Ulama Indonesia — menerbitkan fatwa halal</span></td></tr>
-            <tr><td>LPPOM MUI</td><td><span class="lang-en">MUI's Food, Drug & Cosmetics Assessment Institute</span><span class="lang-id">Lembaga Pengkajian Pangan, Obat-obatan dan Kosmetika MUI</span></td></tr>
-            <tr><td>HCB</td><td><span class="lang-en">Foreign Halal Certification Body (e.g., JAKIM, CICOT)</span><span class="lang-id">Lembaga Sertifikasi Halal Asing (mis. JAKIM, CICOT)</span></td></tr>
-            <tr><td>Bahan Baku</td><td><span class="lang-en">Raw material — primary ingredients</span><span class="lang-id">Bahan utama — bahan pokok</span></td></tr>
-            <tr><td>Bahan Tambahan</td><td><span class="lang-en">Additive — MSG, coloring, preservatives</span><span class="lang-id">Bahan tambahan — MSG, pewarna, pengawet</span></td></tr>
-            <tr><td>Bahan Penolong</td><td><span class="lang-en">Processing aid — used in production, not in final product</span><span class="lang-id">Bahan penolong — digunakan dalam produksi, tidak di produk akhir</span></td></tr>
-            <tr><td>Bahan Komposit</td><td><span class="lang-en">Composite material — pre-mixed with its own sub-ingredients</span><span class="lang-id">Bahan komposit — premix dengan sub-bahan sendiri</span></td></tr>
-            <tr><td>Matriks Bahan</td><td><span class="lang-en">Material Matrix — product × ingredient cross-reference table</span><span class="lang-id">Matriks Bahan — tabel referensi silang produk × bahan</span></td></tr>
-            <tr><td>Daftar Bahan</td><td><span class="lang-en">Materials List — complete ingredient inventory for SIHALAL upload</span><span class="lang-id">Daftar Bahan — inventaris lengkap bahan untuk unggah ke SIHALAL</span></td></tr>
-            <tr><td>Titik Kritis</td><td><span class="lang-en">Critical Halal Point — ingredient/step where halal status is most at risk</span><span class="lang-id">Titik Kritis Kehalalan — bahan/langkah yang status halalnya paling berisiko</span></td></tr>
-            <tr><td>Penyelia Halal</td><td><span class="lang-en">Halal Supervisor — responsible for halal compliance at facility</span><span class="lang-id">Penyelia Halal — penanggung jawab kepatuhan halal di fasilitas</span></td></tr>
-            <tr><td>NIB</td><td><span class="lang-en">Business Identification Number (from OSS)</span><span class="lang-id">Nomor Induk Berusaha (dari OSS)</span></td></tr>
-            <tr><td>NPWP</td><td><span class="lang-en">Tax Identification Number</span><span class="lang-id">Nomor Pokok Wajib Pajak</span></td></tr>
-        </table>
-
-        <p style="margin-top: 48px; text-align: center; color: var(--gray-400); font-size: 13px;">
-            HalalPass 2026 — ARSUS IT Solutions — v1.0 March 2026
-        </p>
-
+        <div class="deadline-banner"><div><h2 class="lang-en">Halal Certification is Mandatory</h2><h2 class="lang-id">Sertifikasi Halal Wajib</h2><p class="lang-en">All food & beverages in Indonesia must be halal-certified by</p><p class="lang-id">Seluruh makanan & minuman di Indonesia wajib bersertifikat halal paling lambat</p></div><div class="date">17 Oct 2026</div></div>
+        <h1 id="intro"><span class="lang-en">What is HalalPass?</span><span class="lang-id">Apa itu HalalPass?</span></h1>
+        <p class="lang-en">HalalPass helps you prepare all the documents you need to get your halal certificate from the government. You enter your company data, ingredients, and products — HalalPass organizes everything, checks if you're ready, and generates the files you upload to SIHALAL.</p>
+        <p class="lang-id">HalalPass membantu Anda menyiapkan semua dokumen yang diperlukan untuk mendapatkan sertifikat halal dari pemerintah. Anda memasukkan data perusahaan, bahan, dan produk — HalalPass mengorganisir semuanya, memeriksa kesiapan, dan menghasilkan file yang Anda unggah ke SIHALAL.</p>
+        <div class="info-box blue"><p class="lang-en" style="margin:0;"><strong>Important:</strong> HalalPass does <em>not</em> issue halal certificates — only BPJPH can do that. HalalPass prepares your documents so you pass the certification process on the first try.</p><p class="lang-id" style="margin:0;"><strong>Penting:</strong> HalalPass <em>tidak</em> menerbitkan sertifikat halal — hanya BPJPH yang bisa. HalalPass menyiapkan dokumen Anda agar lolos proses sertifikasi di percobaan pertama.</p></div>
+        <h1 id="why"><span class="lang-en">Why You Need This</span><span class="lang-id">Mengapa Anda Butuh Ini</span></h1>
+        <div class="value-grid"><div class="value-card without"><h4><span class="lang-en">Without HalalPass</span><span class="lang-id">Tanpa HalalPass</span></h4><p class="lang-en">Search BPJPH manually for every ingredient. Track certificate numbers in notebooks or Excel. Write the SJPH on paper. Build material lists by hand. Find out something is missing only when BPJPH rejects your application.</p><p class="lang-id">Cari BPJPH secara manual untuk setiap bahan. Catat nomor sertifikat di buku atau Excel. Tulis SJPH di kertas. Buat daftar bahan secara manual. Baru tahu ada yang kurang saat BPJPH menolak pengajuan Anda.</p></div><div class="value-card with"><h4><span class="lang-en">With HalalPass</span><span class="lang-id">Dengan HalalPass</span></h4><p class="lang-en">Search BPJPH with one click per ingredient. Certificate numbers auto-shared between companies. SJPH generated automatically. Export everything as a ZIP. Readiness page tells you exactly what to fix.</p><p class="lang-id">Cari BPJPH dengan satu klik per bahan. Nomor sertifikat otomatis dibagikan antar perusahaan. SJPH dihasilkan secara otomatis. Ekspor semuanya dalam ZIP. Halaman kesiapan memberitahu persis apa yang harus diperbaiki.</p></div></div>
+        <h1 id="flow"><span class="lang-en">Your Complete Journey</span><span class="lang-id">Perjalanan Lengkap Anda</span></h1>
+        <p class="lang-en">Steps 1–7 happen inside HalalPass. Step 8 and beyond happen at SIHALAL (the government portal).</p>
+        <p class="lang-id">Langkah 1–7 terjadi di dalam HalalPass. Langkah 8 dan seterusnya terjadi di SIHALAL (portal pemerintah).</p>
+        <div class="step" id="step1"><div class="step-num inside">1</div><div class="step-content"><h3><span class="lang-en">Register Your Company</span><span class="lang-id">Daftarkan Perusahaan Anda</span></h3><span class="step-tag app">HalalPass</span><p class="lang-en">Create your account and fill in your company profile: name, NPWP, address, and director signature. These details appear on your SJPH document.</p><p class="lang-id">Buat akun dan isi profil perusahaan: nama, NPWP, alamat, dan tanda tangan direktur. Detail ini akan muncul di dokumen SJPH Anda.</p></div></div>
+        <div class="step" id="step2"><div class="step-num inside">2</div><div class="step-content"><h3><span class="lang-en">Add Your Facility</span><span class="lang-id">Tambahkan Fasilitas Anda</span></h3><span class="step-tag app">HalalPass</span><p class="lang-en">Register your production site — name, address, city, province. Each facility gets its own SJPH document. BPJPH audits happen at the facility level.</p><p class="lang-id">Daftarkan lokasi produksi — nama, alamat, kota, provinsi. Setiap fasilitas mendapat dokumen SJPH sendiri. Audit BPJPH dilakukan di tingkat fasilitas.</p></div></div>
+        <div class="step" id="step3"><div class="step-num inside">3</div><div class="step-content"><h3><span class="lang-en">Add Your Ingredients</span><span class="lang-id">Tambahkan Bahan Anda</span></h3><span class="step-tag app">HalalPass</span><p class="lang-en">List all ingredients you use. For each one:</p><p class="lang-id">Daftarkan semua bahan yang Anda gunakan. Untuk setiap bahan:</p><ol class="lang-en"><li>Type the ingredient name</li><li>If another company already has the certificate number — it auto-fills!</li><li>If not, click <strong>"Search on BPJPH"</strong> — the official BPJPH directory opens with your ingredient name</li><li>Copy the <strong>Brand/Producer</strong> and <strong>Certificate Number (SH)</strong> from BPJPH back into HalalPass</li><li>Done — certificate is valid for life under GR 42/2024</li></ol><ol class="lang-id"><li>Ketik nama bahan</li><li>Jika perusahaan lain sudah memiliki nomor sertifikatnya — otomatis terisi!</li><li>Jika belum, klik <strong>"Cari di BPJPH"</strong> — direktori resmi BPJPH terbuka dengan nama bahan Anda</li><li>Salin <strong>Merek/Produsen</strong> dan <strong>Nomor Sertifikat (SH)</strong> dari BPJPH kembali ke HalalPass</li><li>Selesai — sertifikat berlaku seumur hidup berdasarkan PP 42/2024</li></ol><div class="info-box green"><p class="lang-en" style="margin:0;"><strong>Tip:</strong> Use "Bulk Add" to paste many ingredient names at once (one per line). You can add certificate numbers later.</p><p class="lang-id" style="margin:0;"><strong>Tips:</strong> Gunakan "Tambah Massal" untuk menempel banyak nama bahan sekaligus (satu per baris). Nomor sertifikat bisa ditambahkan nanti.</p></div></div></div>
+        <div class="step" id="step4"><div class="step-num inside">4</div><div class="step-content"><h3><span class="lang-en">Create Your Products</span><span class="lang-id">Buat Produk Anda</span></h3><span class="step-tag app">HalalPass</span><p class="lang-en">Create each product and link the ingredients it uses. HalalPass calculates a <strong>Halal Health Score</strong> automatically: if all ingredients have valid certificates, the product is compliant. If even one is missing, the product is flagged.</p><p class="lang-id">Buat setiap produk dan hubungkan bahan yang digunakan. HalalPass menghitung <strong>Skor Kesehatan Halal</strong> secara otomatis: jika semua bahan memiliki sertifikat valid, produk sesuai. Jika satu saja hilang, produk ditandai.</p></div></div>
+        <div class="step" id="step5"><div class="step-num inside">5</div><div class="step-content"><h3><span class="lang-en">Generate SJPH Document</span><span class="lang-id">Buat Dokumen SJPH</span></h3><span class="step-tag app">HalalPass</span><p class="lang-en">The SJPH is a mandatory document with 11 sections that BPJPH requires. HalalPass auto-generates 9 of the 11 sections from your existing data. You only fill in:</p><p class="lang-id">SJPH adalah dokumen wajib dengan 11 bagian yang diwajibkan BPJPH. HalalPass menghasilkan 9 dari 11 bagian secara otomatis dari data yang sudah ada. Anda hanya mengisi:</p><ul><li class="lang-en"><strong>Halal Team Members</strong> — names, positions, and roles</li><li class="lang-id"><strong>Anggota Tim Halal</strong> — nama, jabatan, dan peran</li><li class="lang-en"><strong>Training Records</strong> — dates, topics, providers, attendees</li><li class="lang-id"><strong>Catatan Pelatihan</strong> — tanggal, materi, penyelenggara, peserta</li></ul><p class="lang-en">Click <strong>"Generate & Download SJPH"</strong> to get a professional PDF with all 11 sections, your company signature, and all ingredient/product data.</p><p class="lang-id">Klik <strong>"Buat & Unduh SJPH"</strong> untuk mendapatkan PDF profesional dengan 11 bagian lengkap, tanda tangan perusahaan, dan semua data bahan/produk.</p></div></div>
+        <div class="step" id="step6"><div class="step-num inside">6</div><div class="step-content"><h3><span class="lang-en">Check Certification Readiness</span><span class="lang-id">Cek Kesiapan Sertifikasi</span></h3><span class="step-tag app">HalalPass</span><p class="lang-en">The Readiness page runs 6 checks and tells you exactly what's blocking you. When all pass, you see a green <strong>"Ready to Submit!"</strong> banner.</p><p class="lang-id">Halaman Kesiapan menjalankan 6 pemeriksaan dan memberitahu persis apa yang menghalangi. Ketika semua lulus, Anda melihat banner hijau <strong>"Siap Mengajukan!"</strong></p></div></div>
+        <div class="step" id="step7"><div class="step-num inside">7</div><div class="step-content"><h3><span class="lang-en">Download Export ZIP</span><span class="lang-id">Unduh ZIP Ekspor</span></h3><span class="step-tag app">HalalPass</span><p class="lang-en">Download a ZIP file containing everything SIHALAL needs:</p><p class="lang-id">Unduh file ZIP berisi semua yang dibutuhkan SIHALAL:</p><ul><li><strong>Daftar Bahan</strong> — <span class="lang-en">complete ingredient list with certificate status</span><span class="lang-id">daftar lengkap bahan dengan status sertifikat</span></li><li><strong>Matriks Bahan</strong> — <span class="lang-en">which ingredients go into which products</span><span class="lang-id">bahan mana masuk ke produk mana</span></li><li><strong>Daftar Sertifikat</strong> — <span class="lang-en">summary of all halal certificates</span><span class="lang-id">ringkasan semua sertifikat halal</span></li><li><strong>SJPH (PDF)</strong> — <span class="lang-en">complete SJPH document per facility</span><span class="lang-id">dokumen SJPH lengkap per fasilitas</span></li></ul></div></div>
+        <div class="step" id="step8"><div class="step-num outside">8</div><div class="step-content"><h3><span class="lang-en">Submit to SIHALAL & Get Certified</span><span class="lang-id">Kirim ke SIHALAL & Dapatkan Sertifikat</span></h3><span class="step-tag ext"><span class="lang-en">External</span><span class="lang-id">Eksternal</span></span><p class="lang-en">This happens outside HalalPass:</p><p class="lang-id">Ini terjadi di luar HalalPass:</p><ol class="lang-en"><li>Go to <strong>sihalal.halal.go.id</strong> and create an account</li><li>Upload your export files (SJPH PDF + Daftar Bahan + Matriks Bahan)</li><li>Choose an LPH (Halal Inspection Body) for your audit</li><li>Pay the inspection fee</li><li>LPH reviews your documents and may visit your facility</li><li>MUI issues a halal fatwa</li><li>BPJPH issues your Halal Certificate — <strong>valid for life</strong> under GR 42/2024</li></ol><ol class="lang-id"><li>Buka <strong>sihalal.halal.go.id</strong> dan buat akun</li><li>Unggah file ekspor (SJPH PDF + Daftar Bahan + Matriks Bahan)</li><li>Pilih LPH (Lembaga Pemeriksa Halal) untuk audit Anda</li><li>Bayar biaya pemeriksaan</li><li>LPH memeriksa dokumen dan mungkin mengunjungi fasilitas Anda</li><li>MUI menerbitkan fatwa halal</li><li>BPJPH menerbitkan Sertifikat Halal Anda — <strong>berlaku seumur hidup</strong> berdasarkan PP 42/2024</li></ol><div class="info-box amber"><p class="lang-en" style="margin:0;">The process from submission to certificate typically takes <strong>30–90 days</strong>.</p><p class="lang-id" style="margin:0;">Proses dari pengajuan hingga sertifikat biasanya memakan waktu <strong>30–90 hari</strong>.</p></div></div></div>
+        <h1 id="ingredients-feature"><span class="lang-en">Ingredients & Certificates</span><span class="lang-id">Bahan & Sertifikat</span></h1>
+        <p class="lang-en">In HalalPass, ingredients and certificates are managed together on one page. When you add an ingredient, you also add its halal certificate number right there — no separate certificate page needed.</p>
+        <p class="lang-id">Di HalalPass, bahan dan sertifikat dikelola bersama dalam satu halaman. Saat menambahkan bahan, Anda juga menambahkan nomor sertifikat halalnya langsung — tidak perlu halaman sertifikat terpisah.</p>
+        <h3 class="lang-en">How to find a certificate number</h3><h3 class="lang-id">Cara menemukan nomor sertifikat</h3>
+        <ol class="lang-en"><li>On the ingredient form, click the green <strong>"Search on BPJPH Halal Directory"</strong> button</li><li>The official BPJPH website opens with your ingredient name already searched</li><li>Find your ingredient in the results</li><li>Copy the <strong>Nama Produsen</strong> (brand/producer) and <strong>Nomor Sertifikat</strong> (certificate number)</li><li>Paste them back into HalalPass</li></ol>
+        <ol class="lang-id"><li>Pada form bahan, klik tombol hijau <strong>"Cari di Direktori Halal BPJPH"</strong></li><li>Website resmi BPJPH terbuka dengan nama bahan Anda sudah dicari</li><li>Temukan bahan Anda di hasil pencarian</li><li>Salin <strong>Nama Produsen</strong> dan <strong>Nomor Sertifikat</strong></li><li>Tempel kembali ke HalalPass</li></ol>
+        <div class="info-box green"><p class="lang-en" style="margin:0;"><strong>Smart Autocomplete:</strong> When you type an ingredient name, HalalPass checks if any other company already entered that ingredient with a certificate number. If found, the name, brand, and certificate number auto-fill — you don't need to search BPJPH at all!</p><p class="lang-id" style="margin:0;"><strong>Autocomplete Pintar:</strong> Saat Anda mengetik nama bahan, HalalPass memeriksa apakah perusahaan lain sudah memasukkan bahan itu dengan nomor sertifikat. Jika ditemukan, nama, merek, dan nomor sertifikat otomatis terisi — Anda tidak perlu mencari di BPJPH sama sekali!</p></div>
+        <h1 id="risk-levels"><span class="lang-en">Halal Risk Levels</span><span class="lang-id">Tingkat Risiko Halal</span></h1>
+        <p class="lang-en">Every ingredient has a risk level that determines whether a halal certificate is needed:</p><p class="lang-id">Setiap bahan memiliki tingkat risiko yang menentukan apakah sertifikat halal diperlukan:</p>
+        <table><tr><th><span class="lang-en">Risk Level</span><span class="lang-id">Tingkat Risiko</span></th><th><span class="lang-en">Certificate?</span><span class="lang-id">Sertifikat?</span></th><th><span class="lang-en">Examples</span><span class="lang-id">Contoh</span></th></tr><tr><td><span class="badge badge-green"><span class="lang-en">No Risk</span><span class="lang-id">Tanpa Risiko</span></span></td><td><span class="lang-en">Not needed</span><span class="lang-id">Tidak perlu</span></td><td><span class="lang-en">Eggs, water, fresh vegetables, rice</span><span class="lang-id">Telur, air, sayuran segar, beras</span></td></tr><tr><td><span class="badge" style="background:#fefce8;color:#854d0e;"><span class="lang-en">Low Risk</span><span class="lang-id">Risiko Rendah</span></span></td><td><span class="lang-en">Recommended</span><span class="lang-id">Disarankan</span></td><td><span class="lang-en">Salt, sugar, wheat flour</span><span class="lang-id">Garam, gula, tepung terigu</span></td></tr><tr><td><span class="badge badge-amber"><span class="lang-en">Medium Risk</span><span class="lang-id">Risiko Sedang</span></span></td><td><span class="lang-en">Required</span><span class="lang-id">Diperlukan</span></td><td><span class="lang-en">MSG, coloring, preservatives, cooking oil</span><span class="lang-id">MSG, pewarna, pengawet, minyak goreng</span></td></tr><tr><td><span class="badge badge-red"><span class="lang-en">High Risk</span><span class="lang-id">Risiko Tinggi</span></span></td><td><span class="lang-en">Mandatory</span><span class="lang-id">Wajib</span></td><td><span class="lang-en">Gelatin, enzymes, emulsifiers, animal-derived</span><span class="lang-id">Gelatin, enzim, emulsifier, turunan hewani</span></td></tr></table>
+        <div class="info-box blue"><p class="lang-en" style="margin:0;">Under Government Regulation 42/2024, halal certificates are now <strong>valid for life</strong> — no expiry dates. As long as your product composition doesn't change, the certificate remains valid.</p><p class="lang-id" style="margin:0;">Berdasarkan PP 42/2024, sertifikat halal sekarang <strong>berlaku seumur hidup</strong> — tanpa tanggal kadaluarsa. Selama komposisi produk tidak berubah, sertifikat tetap berlaku.</p></div>
+        <h1 id="readiness"><span class="lang-en">Certification Readiness</span><span class="lang-id">Kesiapan Sertifikasi</span></h1>
+        <p class="lang-en">Before submitting to SIHALAL, check the Certification Readiness page. It runs <strong>6 checks</strong>:</p><p class="lang-id">Sebelum mengajukan ke SIHALAL, periksa halaman Kesiapan Sertifikasi. Halaman ini menjalankan <strong>6 pemeriksaan</strong>:</p>
+        <div class="readiness-example"><div class="readiness-check check-pass"><span class="lang-en">Production facilities registered</span><span class="lang-id">Fasilitas produksi terdaftar</span></div><div class="readiness-check check-pass"><span class="lang-en">Ingredients inventoried</span><span class="lang-id">Bahan terinventaris</span></div><div class="readiness-check check-pass"><span class="lang-en">Products created</span><span class="lang-id">Produk terbuat</span></div><div class="readiness-check check-fail"><span class="lang-en">All ingredients have valid halal certificates</span><span class="lang-id">Semua bahan memiliki sertifikat halal valid</span></div><div class="readiness-check check-pass"><span class="lang-en">All products are halal compliant</span><span class="lang-id">Semua produk sesuai halal</span></div><div class="readiness-check check-fail"><span class="lang-en">At least one SJPH document approved</span><span class="lang-id">Minimal satu dokumen SJPH disetujui</span></div></div>
+        <p class="lang-en">For each failed check, the page shows exactly what's wrong and gives you a button to fix it.</p><p class="lang-id">Untuk setiap pemeriksaan yang gagal, halaman menunjukkan persis apa yang salah dan memberikan tombol untuk memperbaiki.</p>
+        <h1 id="sjph"><span class="lang-en">SJPH Document — What Is It?</span><span class="lang-id">Dokumen SJPH — Apa Itu?</span></h1>
+        <p class="lang-en">The SJPH (Sistem Jaminan Produk Halal) is like a <strong>halal operations manual</strong> for your company. BPJPH requires it before they accept your certification application. It proves your company knows how to handle halal products properly.</p>
+        <p class="lang-id">SJPH (Sistem Jaminan Produk Halal) adalah seperti <strong>manual operasi halal</strong> untuk perusahaan Anda. BPJPH mewajibkan ini sebelum menerima pengajuan sertifikasi. Dokumen ini membuktikan perusahaan Anda tahu cara menangani produk halal dengan benar.</p>
+        <table><tr><th>No</th><th><span class="lang-en">Section</span><span class="lang-id">Bagian</span></th><th><span class="lang-en">What it covers</span><span class="lang-id">Apa isinya</span></th><th><span class="lang-en">You fill in?</span><span class="lang-id">Anda isi?</span></th></tr><tr><td>1</td><td>Kebijakan Halal</td><td><span class="lang-en">Your company's halal policy</span><span class="lang-id">Kebijakan halal perusahaan</span></td><td><span class="badge badge-green">Auto</span></td></tr><tr><td>2</td><td>Tim Manajemen Halal</td><td><span class="lang-en">Names and roles of halal team</span><span class="lang-id">Nama dan peran tim halal</span></td><td><span class="badge badge-amber"><span class="lang-en">You fill</span><span class="lang-id">Anda isi</span></span></td></tr><tr><td>3</td><td>Pelatihan</td><td><span class="lang-en">Training records</span><span class="lang-id">Catatan pelatihan</span></td><td><span class="badge badge-amber"><span class="lang-en">You fill</span><span class="lang-id">Anda isi</span></span></td></tr><tr><td>4</td><td>Bahan</td><td><span class="lang-en">Ingredient list + certificate status</span><span class="lang-id">Daftar bahan + status sertifikat</span></td><td><span class="badge badge-green">Auto</span></td></tr><tr><td>5</td><td>Produk</td><td><span class="lang-en">Product list + halal score</span><span class="lang-id">Daftar produk + skor halal</span></td><td><span class="badge badge-green">Auto</span></td></tr><tr><td>6</td><td>Fasilitas</td><td><span class="lang-en">Facility details</span><span class="lang-id">Detail fasilitas</span></td><td><span class="badge badge-green">Auto</span></td></tr><tr><td>7</td><td>Prosedur Kritis</td><td><span class="lang-en">SOPs for receiving, production, packaging</span><span class="lang-id">SOP penerimaan, produksi, pengemasan</span></td><td><span class="badge badge-green">Auto</span></td></tr><tr><td>8</td><td>Kemampuan Telusur</td><td><span class="lang-en">How you track batches</span><span class="lang-id">Cara Anda melacak batch</span></td><td><span class="badge badge-green">Auto</span></td></tr><tr><td>9</td><td>Penanganan Non-Halal</td><td><span class="lang-en">What to do if contamination happens</span><span class="lang-id">Apa yang dilakukan jika terjadi kontaminasi</span></td><td><span class="badge badge-green">Auto</span></td></tr><tr><td>10</td><td>Audit Internal</td><td><span class="lang-en">Internal audit procedures</span><span class="lang-id">Prosedur audit internal</span></td><td><span class="badge badge-green">Auto</span></td></tr><tr><td>11</td><td>Kaji Ulang</td><td><span class="lang-en">Management review</span><span class="lang-id">Kaji ulang manajemen</span></td><td><span class="badge badge-green">Auto</span></td></tr></table>
+        <div class="info-box green"><p class="lang-en" style="margin:0;"><strong>9 out of 11 sections are auto-generated.</strong> You only fill in team members and training records — everything else comes from your existing data.</p><p class="lang-id" style="margin:0;"><strong>9 dari 11 bagian dibuat otomatis.</strong> Anda hanya mengisi anggota tim dan catatan pelatihan — selebihnya dari data yang sudah ada.</p></div>
+        <h1 id="company-profile"><span class="lang-en">Company Profile</span><span class="lang-id">Profil Perusahaan</span></h1>
+        <p class="lang-en">Your company profile must be complete before you can generate the SJPH. Three fields are required:</p><p class="lang-id">Profil perusahaan harus lengkap sebelum Anda dapat membuat SJPH. Tiga kolom wajib diisi:</p>
+        <ul><li class="lang-en"><strong>NPWP</strong> — your company tax number</li><li class="lang-id"><strong>NPWP</strong> — nomor pajak perusahaan</li><li class="lang-en"><strong>Person In Charge</strong> — full name of the director/owner who signs the SJPH</li><li class="lang-id"><strong>Penanggung Jawab</strong> — nama lengkap direktur/pemilik yang menandatangani SJPH</li><li class="lang-en"><strong>Director Signature</strong> — draw directly on screen or upload an image (PNG/JPG)</li><li class="lang-id"><strong>Tanda Tangan Direktur</strong> — gambar langsung di layar atau unggah gambar (PNG/JPG)</li></ul>
+        <p class="lang-en">If any of these are missing when you try to generate the SJPH, HalalPass will redirect you to complete your profile first.</p><p class="lang-id">Jika salah satu dari ini belum diisi saat Anda mencoba membuat SJPH, HalalPass akan mengarahkan Anda untuk melengkapi profil terlebih dahulu.</p>
+        <h1 id="glossary"><span class="lang-en">Glossary</span><span class="lang-id">Glosarium</span></h1>
+        <table><tr><th><span class="lang-en">Term</span><span class="lang-id">Istilah</span></th><th><span class="lang-en">What it means</span><span class="lang-id">Artinya</span></th></tr><tr><td>BPJPH</td><td><span class="lang-en">The government agency that issues halal certificates</span><span class="lang-id">Lembaga pemerintah yang menerbitkan sertifikat halal</span></td></tr><tr><td>SIHALAL</td><td><span class="lang-en">BPJPH's website where you apply for certification</span><span class="lang-id">Website BPJPH tempat Anda mengajukan sertifikasi</span></td></tr><tr><td>SH</td><td><span class="lang-en">Sertifikat Halal — the certificate number (e.g. 00220270910125)</span><span class="lang-id">Sertifikat Halal — nomor sertifikat (cth. 00220270910125)</span></td></tr><tr><td>SJPH</td><td><span class="lang-en">Your company's halal operations manual (11 sections) — required by BPJPH</span><span class="lang-id">Manual operasi halal perusahaan Anda (11 bagian) — diwajibkan BPJPH</span></td></tr><tr><td>LPH</td><td><span class="lang-en">The auditor who checks your documents and facility</span><span class="lang-id">Auditor yang memeriksa dokumen dan fasilitas Anda</span></td></tr><tr><td>MUI</td><td><span class="lang-en">Indonesian Ulema Council — issues halal fatwas</span><span class="lang-id">Majelis Ulama Indonesia — menerbitkan fatwa halal</span></td></tr><tr><td>NPWP</td><td><span class="lang-en">Your company tax number</span><span class="lang-id">Nomor Pokok Wajib Pajak perusahaan Anda</span></td></tr><tr><td>Daftar Bahan</td><td><span class="lang-en">Your complete ingredient list — uploaded to SIHALAL</span><span class="lang-id">Daftar lengkap bahan Anda — diunggah ke SIHALAL</span></td></tr><tr><td>Matriks Bahan</td><td><span class="lang-en">Table showing which ingredients go into which products</span><span class="lang-id">Tabel yang menunjukkan bahan mana masuk ke produk mana</span></td></tr><tr><td>PP 42/2024</td><td><span class="lang-en">Government regulation making halal certificates valid for life</span><span class="lang-id">Peraturan pemerintah yang membuat sertifikat halal berlaku seumur hidup</span></td></tr></table>
+        <h1 id="faq"><span class="lang-en">Frequently Asked Questions</span><span class="lang-id">Pertanyaan Umum</span></h1>
+        <h3 class="lang-en">Does HalalPass give me a halal certificate?</h3><h3 class="lang-id">Apakah HalalPass memberikan sertifikat halal?</h3>
+        <p class="lang-en">No. Only BPJPH can issue halal certificates. HalalPass prepares all your documents so you're ready to submit.</p><p class="lang-id">Tidak. Hanya BPJPH yang bisa menerbitkan sertifikat halal. HalalPass menyiapkan semua dokumen agar Anda siap mengajukan.</p>
+        <h3 class="lang-en">Do halal certificates expire?</h3><h3 class="lang-id">Apakah sertifikat halal ada masa berlakunya?</h3>
+        <p class="lang-en">Under GR 42/2024, certificates are valid for life as long as the product composition doesn't change.</p><p class="lang-id">Berdasarkan PP 42/2024, sertifikat berlaku seumur hidup selama komposisi produk tidak berubah.</p>
+        <h3 class="lang-en">What if my ingredient isn't found on BPJPH?</h3><h3 class="lang-id">Bagaimana jika bahan saya tidak ditemukan di BPJPH?</h3>
+        <p class="lang-en">That means the ingredient doesn't have a halal certificate yet. Contact the producer/brand and ask them to get certified, or find an alternative ingredient that is already certified.</p><p class="lang-id">Itu berarti bahan tersebut belum memiliki sertifikat halal. Hubungi produsen/merek dan minta mereka untuk disertifikasi, atau cari bahan alternatif yang sudah bersertifikat.</p>
+        <h3 class="lang-en">Can other companies see my data?</h3><h3 class="lang-id">Apakah perusahaan lain bisa melihat data saya?</h3>
+        <p class="lang-en">No. Your company data (products, facilities, team) is private. The only thing shared between companies is ingredient certificate numbers — which is public information from BPJPH anyway.</p><p class="lang-id">Tidak. Data perusahaan Anda (produk, fasilitas, tim) bersifat privat. Satu-satunya yang dibagikan antar perusahaan adalah nomor sertifikat bahan — yang memang informasi publik dari BPJPH.</p>
+        <h3 class="lang-en">What is a "Halal Health Score"?</h3><h3 class="lang-id">Apa itu "Skor Kesehatan Halal"?</h3>
+        <p class="lang-en">A score from 0 to 100 for each product. If all ingredients have valid certificates, the score is 100 (compliant). If any medium/high-risk ingredient is missing a certificate, the score drops to 0 (non-compliant). One bad ingredient makes the whole product fail.</p><p class="lang-id">Skor dari 0 sampai 100 untuk setiap produk. Jika semua bahan memiliki sertifikat valid, skor 100 (sesuai). Jika bahan risiko sedang/tinggi belum ada sertifikat, skor turun ke 0 (tidak sesuai). Satu bahan bermasalah membuat seluruh produk gagal.</p>
+        <h3 class="lang-en">How long does the certification process take?</h3><h3 class="lang-id">Berapa lama proses sertifikasi?</h3>
+        <p class="lang-en">Inside HalalPass: 1–2 days to enter all data. The external process (SIHALAL submission, LPH audit, MUI fatwa, certificate) takes 30–90 days.</p><p class="lang-id">Di dalam HalalPass: 1–2 hari untuk memasukkan semua data. Proses eksternal (pengajuan SIHALAL, audit LPH, fatwa MUI, sertifikat) memakan waktu 30–90 hari.</p>
+        <p style="margin-top: 48px; text-align: center; color: var(--gray-400); font-size: 13px;">HalalPass 2026 — ARSUS IT Solutions — v2.0 April 2026</p>
     </div>
 </div>
-
 <script>
 function setLang(lang) {
     document.body.dataset.lang = lang;

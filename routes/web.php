@@ -50,7 +50,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Company profile — view for all, edit for admin
         Route::get('company-profile', [CompanyProfileController::class, 'show'])->name('company-profile.show');
-        Route::put('company-profile', [CompanyProfileController::class, 'update'])->name('company-profile.update');
+        Route::post('company-profile', [CompanyProfileController::class, 'update'])->name('company-profile.update');
+        Route::delete('company-profile/signature', [CompanyProfileController::class, 'deleteSignature'])->name('company-profile.delete-signature');
 
         // User management — admin only
         Route::resource('users', UserManagementController::class)->except(['show']);
@@ -92,9 +93,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('products.recalculate');
 
         // SJPH Documents
+        Route::get('sjph/{facility}/download', [SjphController::class, 'generate'])->name('sjph.download');
         Route::get('sjph/{facility}', [SjphController::class, 'show'])->name('sjph.show');
         Route::post('sjph/{facility}/save', [SjphController::class, 'save'])->name('sjph.save');
-        Route::get('sjph/{facility}/download', [SjphController::class, 'generate'])->name('sjph.download');
 
         // Audit Export
         Route::get('export', [AuditExportController::class, 'index'])->name('export.index');
